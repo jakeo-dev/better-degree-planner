@@ -19,7 +19,7 @@ export default function Draggable(props: {
       }}
       {...listeners}
       {...attributes}
-      className={`w-40 h-20 bg-blue-200 rounded-md cursor-grab active:cursor-grabbing ${props.className}`}
+      className={`w-full h-20 bg-blue-200 rounded-md cursor-grab active:cursor-grabbing ${props.className}`}
     >
       {props.children}
     </button>
