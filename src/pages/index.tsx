@@ -107,25 +107,25 @@ export default function Home() {
             </Droppable>
             
             {/* Buttons for Courses and Years */}
-            <div className="grid grid-cols-4 place-items-center mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 place-items-center mb-8">
               {/* The first two buttons do nothing; there's no code to add the courses or remove them yet. */ }
-              <button onClick = {addCourse} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-blue-600">
-                <LuCirclePlus className="text-4xl mr-1.5" />
+              <button onClick = {addCourse} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-blue-600">
+                <LuCirclePlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Add Course</span>
               </button>
 
-              <button className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-red-600">
-                <LuCircleMinus className="text-4xl mr-1.5" />
+              <button className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-red-600">
+                <LuCircleMinus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Remove Course</span>
               </button>
 
-              <button onClick={addTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-blue-600">
-                <LuCalendarPlus className="text-4xl mr-1.5" />
+              <button onClick={addTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-blue-600">
+                <LuCalendarPlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Add Year</span>
               </button>
 
-              <button onClick={removeTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-red-600">
-                <LuCalendarMinus className="text-4xl mr-1.5" />
+              <button onClick={removeTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-red-600">
+                <LuCalendarMinus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Remove Year</span>
               </button>
             </div>
