@@ -98,8 +98,8 @@ export default function Home() {
           <div className="m-6 md:m-12 lg:m-20">
 
             {/* "Outside" Box at the Top */}
-            <Droppable dropId="outside" className="w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 mb-8">
-              <span className="font-bold mb-2">Your Courses</span>
+            <Droppable dropId="outside" className="relative w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 pt-14 mb-8">
+              <h2 className="absolute top-4 font-bold">Your Courses</h2>
               {termsCoursesData["outside"].map((course) => (
                 <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center">
                 </Draggable>
@@ -135,8 +135,8 @@ export default function Home() {
               {Object.entries(termsCoursesData)
                 .filter(([term]) => term !== "outside") // exclude outside
                 .map(([term, courses]) => (
-                  <Droppable dropId={term} key={term} className="relative w-full md:w-full p-4 pt-12 border-2 flex-shrink-0 h-[70vh] border-gray-300 border-dashed rounded-md flex flex-col items-center gap-4">
-                    <span className="absolute top-3">{term}</span>
+                  <Droppable dropId={term} key={term} className="relative w-full md:w-full p-4 pt-14 border-2 flex-shrink-0 h-[70vh] border-gray-300 border-dashed rounded-md flex flex-col items-center gap-4">
+                    <h2 className="absolute top-4 font-bold">{term}</h2>
                     {courses.length > 0 ? 
                       (courses.map((course) => (
                         <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center" />
