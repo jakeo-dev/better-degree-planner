@@ -7,10 +7,10 @@ import { useState } from "react";
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useState<Record<string, string[]>>({
     outside: ["CS 100", "ENG 101"],
-    "1-1": ["CS 101", "ENG 102"],
-    "1-2": ["CS 102"],
-    "1-3": ["CS 103"],
-    "1-4": ["CS 104"],
+    "Year 1, Term 1": ["CS 101", "ENG 102"],
+    "Year 1, Term 2": ["CS 102"],
+    "Year 1, Term 3": ["CS 103"],
+    "Year 1, Term 4": ["CS 104"],
   });
 
   function handleDragEnd(event: DragEndEvent) {
@@ -30,14 +30,14 @@ export default function Home() {
   }
   function addTerm() { //takes last term's year then adds four more terms to the next year
     const lastTerm = Object.keys(termsCoursesData).at(-1);
-    const yearAndTerm = lastTerm?.split("-");
+    const yearAndTerm = lastTerm?.replace("Year", "").replace("Term", "").trim().split(", ");
     let newTerm = parseInt(yearAndTerm![0])+1;
-    if (Object.keys(termsCoursesData).length <= 2){
+    if (Object.keys(termsCoursesData).length <= 2) {
       newTerm = 1;
     }
     //Adds four new terms
-    for (let n=1; n <= 4; n++){
-      const newTermString= newTerm.toString() + "-" + n.toString()
+    for (let n=1; n <= 4; n++) {
+      const newTermString = "Year " + newTerm.toString() + ", Term " + n.toString();
       setTermsCoursesData(prev => ({
         ...prev,
         [newTermString]: [] // the [] is the course list
@@ -50,10 +50,10 @@ export default function Home() {
       const keys = Object.keys(prev);
       const lastKey = keys.filter(k => k !== "outside").at(-1); //looks for the last term (year)
       if (!lastKey) return prev;
-      const [lastYearStr] = lastKey.split("-");
+      const [lastYearStr] = lastKey.replace("Year", "").replace("Term", "").trim().split(", ");
       const lastYear = parseInt(lastYearStr); //taking the process from addTerm 
       // build the 4 term keys for that year
-      const keysToRemove = Array.from({ length: 4 }, (_, i) => `${lastYear}-${i + 1}`);
+      const keysToRemove = Array.from({ length: 4 }, (_, i) => `Year ${lastYear}, Term ${i + 1}`);
       const removedCourses = keysToRemove.flatMap(k => prev[k] || []);
 
       // Build new object without those terms
@@ -137,9 +137,12 @@ export default function Home() {
                 .map(([term, courses]) => (
                   <Droppable dropId={term} key={term} className="relative w-full md:w-full p-4 pt-12 border-2 flex-shrink-0 h-[70vh] border-gray-300 border-dashed rounded-md flex flex-col items-center gap-4">
                     <span className="absolute top-3">{term}</span>
-                    {courses.map((course) => (
-                      <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center" />
-                    ))}
+                    {courses.length > 0 ? 
+                      (courses.map((course) => (
+                        <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center" />
+                      )))
+                      : <span className="text-gray-500">No courses yet...</span>
+                    }
                   </Droppable>
                 ))}
             </div>
