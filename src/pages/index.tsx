@@ -28,7 +28,6 @@ export default function Home() {
       return newData;
     });
   }
-
   function addTerm() { //takes last term's year then adds four more terms to the next year
     const lastTerm = Object.keys(termsCoursesData).at(-1);
     const yearAndTerm = lastTerm?.split("-");
@@ -37,7 +36,7 @@ export default function Home() {
       newTerm = 1;
     }
     //Adds four new terms
-    for (let n=1; n <= 4; n++) {
+    for (let n=1; n <= 4; n++){
       const newTermString= newTerm.toString() + "-" + n.toString()
       setTermsCoursesData(prev => ({
         ...prev,
@@ -70,7 +69,27 @@ export default function Home() {
       };
     });
   }
-
+  function addCourse() {
+    setTermsCoursesData((prev) => {
+      return {
+        ...prev, 
+        outside:[...prev.outside, "Double Click Me to Change My Name!"]
+      }
+    })
+  }
+  function courseNameChange(dragId: string, name: string){
+    setTermsCoursesData((prev) => {
+      // Create a new object to avoid mutating state
+      const newData: Record<string, string[]> = {};
+      // Iterate over each term
+      for (const term in prev) {
+        newData[term] = prev[term].map((course) =>
+          course === dragId ? name : course //changes name :)
+        );
+      }
+      return newData;
+    });
+  }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -82,32 +101,31 @@ export default function Home() {
             <Droppable dropId="outside" className="w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 mb-8">
               <span className="font-bold mb-2">Your Courses</span>
               {termsCoursesData["outside"].map((course) => (
-                <Draggable dragId={course} key={course} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center">
-                  <span>{course}</span>
+                <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center">
                 </Draggable>
               ))}
             </Droppable>
             
             {/* Buttons for Courses and Years */}
-            <div className="grid grid-cols-4 place-items-center mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 place-items-center mb-8">
               {/* The first two buttons do nothing; there's no code to add the courses or remove them yet. */ }
-              <button className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-blue-600">
-                <LuCirclePlus className="text-4xl mr-1.5" />
+              <button onClick = {addCourse} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-blue-600">
+                <LuCirclePlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Add Course</span>
               </button>
 
-              <button className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-red-600">
-                <LuCircleMinus className="text-4xl mr-1.5" />
+              <button className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-red-600">
+                <LuCircleMinus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Remove Course</span>
               </button>
 
-              <button onClick={addTerm} className=" cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-blue-600">
-                <LuCalendarPlus className="text-4xl mr-1.5" />
+              <button onClick={addTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-blue-600">
+                <LuCalendarPlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Add Year</span>
               </button>
 
-              <button onClick={removeTerm} className=" cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition-all hover:text-red-600">
-                <LuCalendarMinus className="text-4xl mr-1.5" />
+              <button onClick={removeTerm} className="cursor-pointer flex flex-wrap items-center justify-center text-black font-bold text-xl transition hover:text-red-600">
+                <LuCalendarMinus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Remove Year</span>
               </button>
             </div>
@@ -120,9 +138,7 @@ export default function Home() {
                   <Droppable dropId={term} key={term} className="relative w-full md:w-full p-4 pt-12 border-2 flex-shrink-0 h-[70vh] border-gray-300 border-dashed rounded-md flex flex-col items-center gap-4">
                     <span className="absolute top-3">{term}</span>
                     {courses.map((course) => (
-                      <Draggable dragId={course} key={course} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center">
-                        <span>{course}</span>
-                      </Draggable>
+                      <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center" />
                     ))}
                   </Droppable>
                 ))}
