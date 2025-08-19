@@ -11,21 +11,21 @@ export default function Home() {
     Record<string, CourseTile[]>
   >({
     outside: [
-      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200" },
-      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200" },
+      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200 focus:bg-orange-300" },
+      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200 focus:bg-yellow-300" },
     ],
     "Year 1 | Term 1": [
-      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200" },
-      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200" },
+      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200 focus:bg-yellow-300" },
+      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200 focus:bg-orange-300" },
     ],
     "Year 1 | Term 2": [
-      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200" },
+      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200 focus:bg-orange-300" },
     ],
     "Year 1 | Term 3": [
-      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200" },
+      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200 focus:bg-orange-300" },
     ],
     "Year 1 | Term 4": [
-      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200" },
+      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200 focus:bg-orange-300" },
     ],
   });
 
@@ -161,14 +161,15 @@ export default function Home() {
     })
   }
 
-  function courseNameChange(dragId: string, name: string){
+  // updates course info from modal and saves it in termsCoursesData state
+  function updateCourse(uuid: string, newName: string, newColor: string) {
     setTermsCoursesData((prev) => {
       // Create a new object to avoid mutating state
       const newData: Record<string, CourseTile[]> = {};
       // Iterate over each term
       for (const term in prev) {
         newData[term] = prev[term].map((course) =>
-          course.uuid === dragId ? { uuid: dragId, name: name, color: course.color } : course //changes name :)
+          course.uuid === uuid ? { uuid: uuid, name: newName, color: newColor } : course //changes name :)
         );
       }
 
@@ -187,7 +188,7 @@ export default function Home() {
               <Droppable dropId="outside" className="relative w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 pt-12 md:pt-14">
                 <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">Your Courses</h2>
                 {termsCoursesData["outside"].map((course) => (
-                  <Draggable course={course} key={course.uuid} courseNameChange = {courseNameChange} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center">
+                  <Draggable course={course} key={course.uuid} updateCourse={updateCourse} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center">
                   </Draggable>
                 ))}
               </Droppable>
@@ -250,7 +251,7 @@ export default function Home() {
                     <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">{term}</h2>
                     {courses.length > 0 ? 
                       (courses.map((course) => (
-                        <Draggable course={course} key={course.uuid} courseNameChange = {courseNameChange} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center" />
+                        <Draggable course={course} key={course.uuid} updateCourse={updateCourse} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center" />
                       )))
                       : <span className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</span>
                     }

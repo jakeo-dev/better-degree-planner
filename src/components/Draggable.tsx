@@ -5,12 +5,12 @@ import { CourseTile } from "@/types";
 
 export default function Draggable(props: {
   course: CourseTile;
-  courseNameChange: (dragId: string, name: string) => void;
+  updateCourse: (uuid: string, name: string, color: string) => void;
   className?: string;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [courseName, setCourseName] = useState(props.course.name);
-  const [courseColor, setCourseColor] = useState("bg-blue-200 focus:bg-blue-300");
+  const [courseColor, setCourseColor] = useState(props.course.color);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.course.uuid,
   });
@@ -18,7 +18,7 @@ export default function Draggable(props: {
   function editCourse(newName:string, newColor:string) {
     setCourseName(newName);
     setCourseColor(newColor);
-    props.courseNameChange(props.course.uuid, newName);
+    props.updateCourse(props.course.uuid, newName, newColor);
   }
 
   return (
@@ -29,7 +29,7 @@ export default function Draggable(props: {
           transform: transform
             ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
             : undefined,
-          touchAction: "none", // prevents default touch actions, like scrolling, from happening, when touching the draggable element
+          touchAction: "none", // prevents default touch actions, like scrolling, when touching the draggable element (necessary for some mobile devices))
         }}
         {...listeners}
         {...attributes}
