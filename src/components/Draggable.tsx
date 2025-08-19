@@ -1,35 +1,23 @@
 import { useDraggable } from "@dnd-kit/core";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
+import Modal from "./Modal";
 
 export default function Draggable(props: {
   dragId: string;
   courseNameChange: (dragId: string, name: string) => void;
   className?: string;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempName, setTempName] = useState(props.dragId);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [courseName, setCourseName] = useState(props.dragId);
+  const [courseColor, setCourseColor] = useState("bg-blue-100");
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.dragId,
   });
 
-  function changeName() {
-    setIsEditing(true);
-  }
-
-  function handleInputChange(e: { target: { value: SetStateAction<string> } }) {
-    setTempName(e.target.value);
-  }
-
-  function onEnterPress(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      setIsEditing(false);
-      props.courseNameChange(props.dragId, tempName);
-    }
-  }
-
-  function onLoseFocus() {
-    setIsEditing(false);
-    props.courseNameChange(props.dragId, tempName);
+  function editCourse(newName:string, newColor:string) {
+    setCourseName(newName);
+    setCourseColor(newColor);
+    props.courseNameChange(props.dragId, courseName);
   }
 
   return (
@@ -44,22 +32,13 @@ export default function Draggable(props: {
         }}
         {...listeners}
         {...attributes}
-        className={`w-full h-12 md:h-20 rounded-md cursor-grab active:cursor-grabbing ${props.className}`}
-        onDoubleClick={changeName}
+        className={`w-full h-12 md:h-20 rounded-md cursor-grab active:cursor-grabbing ${courseColor} ${props.className} ${modalOpen && `bg-gray-200`}`}
+        onDoubleClick={() => setModalOpen(true)}
       >
-        <span>{tempName}</span>
+        <span>{courseName}</span>
       </button>
 
-      {isEditing && (
-        <input
-          value={tempName}
-          onChange={handleInputChange}
-          onKeyDown={onEnterPress}
-          onBlur={onLoseFocus} // saves on click-away
-          autoFocus
-          className="bg-white text-center rounded-md"
-        />
-      )}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />
     </>
   );
 }
