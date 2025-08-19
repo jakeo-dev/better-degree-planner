@@ -52,7 +52,7 @@ export default function Home() {
       const newData = { ...prev };
       newData[originTerm ? originTerm : "outside"] = newData[
         originTerm ? originTerm : "outside"
-      ].filter((course) => course.name !== draggedCourse.name); // remove the dragged course from the origin term
+      ].filter((course) => course.uuid !== draggedCourse.uuid); // remove the dragged course from the origin term
       if (targetTerm !== "delete") newData[targetTerm] = [...newData[targetTerm], draggedCourse]; // add the dragged course to the target term
       return newData;
     });
