@@ -4,31 +4,56 @@ import Draggable from "@/components/Draggable";
 import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2, LuRectangleHorizontal, LuRectangleVertical } from "react-icons/lu";
 import { CiGrid2V, CiGrid41 } from "react-icons/ci";
 import { useState, useEffect } from "react";
+import { CourseTile } from "@/types";
 
 export default function Home() {
-  const [termsCoursesData, setTermsCoursesData] = useState<Record<string, string[]>>({
-    outside: ["CS 100", "ENG 101"],
-    "Year 1 | Term 1": ["CS 101", "ENG 102"],
-    "Year 1 | Term 2": ["CS 102"],
-    "Year 1 | Term 3": ["CS 103"],
-    "Year 1 | Term 4": ["CS 104"],
+  const [termsCoursesData, setTermsCoursesData] = useState<
+    Record<string, CourseTile[]>
+  >({
+    outside: [
+      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200" },
+      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200" },
+    ],
+    "Year 1 | Term 1": [
+      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200" },
+      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200" },
+    ],
+    "Year 1 | Term 2": [
+      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200" },
+    ],
+    "Year 1 | Term 3": [
+      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200" },
+    ],
+    "Year 1 | Term 4": [
+      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200" },
+    ],
   });
 
   const [view, setView] = useState("horizontal"); // horizontal or vertical view
   const [termType, setTermType] = useState("Quarter") //quarter or semester view
 
+  const [trashTextVisibility, setTrashTextVisibility] = useState("invisible") // text under trsh icon only isible when dragging a course
+
+  function handleDragStart() {
+    setTrashTextVisibility("visible");
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setTrashTextVisibility("invisible");
+
     if (event.over == null) return;
-    const targetTerm = String(event.over.id); // id of term where the course was dropped
-    const draggedCourse = String(event.active.id); // id of course being dragged
-    const originTerm = Object.keys(termsCoursesData).find((term) => termsCoursesData[term].includes(draggedCourse) ); // id of term where course was dragged from
-    if (originTerm === targetTerm) return; // if course isnt dropped in a different term, do nothing
+    const draggedCourseUUID = String(event.active.id); // uuid of course being dragged
+    const targetTerm = String(event.over.id); // name of term where the course was dropped
+    const originTerm = Object.keys(termsCoursesData).find((term) => termsCoursesData[term].some((course) => course.uuid == draggedCourseUUID) ) || "outside"; // id of term where course was dragged from
+    const draggedCourse = termsCoursesData[originTerm].find((course) => course.uuid == draggedCourseUUID); // entire object of the course being dragged
+
+    if (originTerm === targetTerm || draggedCourse == undefined) return; // if course isnt dropped in a different term, do nothing
     setTermsCoursesData((prev) => {
       const newData = { ...prev };
       newData[originTerm ? originTerm : "outside"] = newData[
         originTerm ? originTerm : "outside"
-      ].filter((course) => course !== draggedCourse); // remove the dragged course from the origin term
-      if (targetTerm !== "delete") newData[targetTerm] = [...newData[targetTerm], draggedCourse as string]; // add the dragged course to the target term
+      ].filter((course) => course.name !== draggedCourse.name); // remove the dragged course from the origin term
+      if (targetTerm !== "delete") newData[targetTerm] = [...newData[targetTerm], draggedCourse]; // add the dragged course to the target term
       return newData;
     });
   }
@@ -44,7 +69,7 @@ export default function Home() {
       }
 
       const termsPerYear = termType === "Semester" ? 3 : 4;
-      const newEntries: Record<string, string[]> = {};
+      const newEntries: Record<string, CourseTile[]> = {};
       for (let n = 1; n <= termsPerYear; n++) {
         const newTermString = `Year ${newYear} | Term ${n}`;
         newEntries[newTermString] = [];
@@ -83,7 +108,7 @@ export default function Home() {
       // remove all "Term 4" from every year
       setTermsCoursesData((prev) => {
         const updated: typeof prev = { ...prev };
-        let movedCourses: string[] = [];
+        let movedCourses: CourseTile[] = [];
         Object.keys(prev).forEach((key) => {
           if (key.includes("Term 4")) {
             movedCourses = [...movedCourses, ...(prev[key] || [])];
@@ -130,8 +155,8 @@ export default function Home() {
   function addCourse() {
     setTermsCoursesData((prev) => {
       return {
-        ...prev, 
-        outside:[...prev.outside, "Double Click Me to Change My Name!"]
+        ...prev,
+        outside: [...prev.outside, { uuid: crypto.randomUUID(), name: "Double Click to Edit Me!", color: "bg-blue-200" }]
       }
     })
   }
@@ -139,46 +164,49 @@ export default function Home() {
   function courseNameChange(dragId: string, name: string){
     setTermsCoursesData((prev) => {
       // Create a new object to avoid mutating state
-      const newData: Record<string, string[]> = {};
+      const newData: Record<string, CourseTile[]> = {};
       // Iterate over each term
       for (const term in prev) {
         newData[term] = prev[term].map((course) =>
-          course === dragId ? name : course //changes name :)
+          course.uuid === dragId ? { uuid: dragId, name: name, color: course.color } : course //changes name :)
         );
       }
+
       return newData;
     });
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <div>
         <div className="items-center justify-center">
           <div className="m-6 md:m-12 lg:m-20">
 
-            {/* "Outside" Box at the Top */}
-            <Droppable dropId="outside" className="relative w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 pt-12 md:pt-14 mb-8">
-              <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">Your Courses</h2>
-              {termsCoursesData["outside"].map((course) => (
-                <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] text-center">
-                </Draggable>
-              ))}
-            </Droppable>
+            <div className="flex gap-4 md:gap-8 mb-8">
+              {/* "Outside" Box at the Top */}
+              <Droppable dropId="outside" className="relative w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 pt-12 md:pt-14">
+                <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">Your Courses</h2>
+                {termsCoursesData["outside"].map((course) => (
+                  <Draggable course={course} key={course.uuid} courseNameChange = {courseNameChange} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center">
+                  </Draggable>
+                ))}
+              </Droppable>
+
+              {/* trash box for removing courses */}
+              <Droppable dropId="delete" className="relative w-1/5 md:w-1/10 text-center text-gray-500 transition border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center px-4">
+                <div className="w-full">
+                  <LuTrash2 className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-2xl md:text-4xl" aria-hidden />
+                  <p className={`${trashTextVisibility} text-xs md:text-sm w-full px-2 absolute bottom-3 left-1/2 -translate-x-1/2`}>Drag here to remove</p>
+                </div>
+              </Droppable>
+            </div>
             
             {/* Buttons for Courses and Years */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 place-items-center mb-8 text-black">
-
               <button onClick={addCourse} className="cursor-pointer flex flex-wrap items-center justify-center font-bold text-xl transition hover:text-blue-600">
                 <LuCirclePlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
                 <span>Add Course</span>
               </button>
-
-              <Droppable dropId="delete">
-              <button className="cursor-pointer flex flex-wrap items-center justify-center font-bold text-xl transition">
-                <LuTrash2 className="text-2xl md:text-4xl mr-1.5" aria-hidden />
-                <span>Remove Course</span>
-              </button>
-              </Droppable>
 
               <button onClick={addTerm} className="cursor-pointer flex flex-wrap items-center justify-center font-bold text-xl transition hover:text-blue-600">
                 <LuCalendarPlus className="text-2xl md:text-4xl mr-1.5" aria-hidden />
@@ -211,7 +239,6 @@ export default function Home() {
                 <CiGrid41 className={`${termType == "Semester" ? "hidden" : ""} text-2xl md:text-4xl mr-1.5`} aria-hidden />
                 <span>{termType} System</span>
               </button>
-
             </div>
 
             {/* The rest of the terms in a grid */}
@@ -223,9 +250,9 @@ export default function Home() {
                     <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">{term}</h2>
                     {courses.length > 0 ? 
                       (courses.map((course) => (
-                        <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center" />
+                        <Draggable course={course} key={course.uuid} courseNameChange = {courseNameChange} className="p-2 z-10 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center" />
                       )))
-                      : <span className="text-gray-500 text-center text-sm md:text-base">No courses yet...</span>
+                      : <span className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</span>
                     }
                   </Droppable>
                 ))}
