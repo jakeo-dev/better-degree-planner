@@ -1,35 +1,23 @@
 import { useDraggable } from "@dnd-kit/core";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 
 export default function Draggable(props: {
   dragId: string;
   courseNameChange: (dragId: string, name: string) => void;
   className?: string;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(props.dragId);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.dragId,
   });
 
   function changeName() {
-    setIsEditing(true);
-  }
-
-  function handleInputChange(e: { target: { value: SetStateAction<string> } }) {
-    setTempName(e.target.value);
-  }
-
-  function onEnterPress(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      setIsEditing(false);
+    const newName = window.prompt("Enter the New Course Name: ")
+    if (newName !== null && newName.trim() !== "") {
+      setTempName(newName.slice(0,30)); //trims string from 0 to 30
       props.courseNameChange(props.dragId, tempName);
     }
-  }
-
-  function onLoseFocus() {
-    setIsEditing(false);
-    props.courseNameChange(props.dragId, tempName);
+    
   }
 
   return (
@@ -50,16 +38,6 @@ export default function Draggable(props: {
         <span>{tempName}</span>
       </button>
 
-      {isEditing && (
-        <input
-          value={tempName}
-          onChange={handleInputChange}
-          onKeyDown={onEnterPress}
-          onBlur={onLoseFocus} // saves on click-away
-          autoFocus
-          className="bg-white text-center rounded-md"
-        />
-      )}
     </>
   );
 }

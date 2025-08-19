@@ -9,10 +9,11 @@ export default function Droppable(props: {
     id: props.dropId,
   });
 
+  
   return (
     <div
       ref={setNodeRef}
-      className={`transition ${isOver ? "bg-gray-100" : "transparent"} ${
+      className={`transition ${isOver && props.dropId === "delete" ? "text-red-600 scale-115" : isOver ? "bg-gray-100" : "transparent"} ${
         props.className
       }`}
     >
