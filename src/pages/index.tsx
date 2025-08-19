@@ -104,7 +104,7 @@ export default function Home() {
             <Droppable dropId="outside" className="relative w-full min-h-[150px] border-2 border-gray-300 border-dashed rounded-md flex flex-wrap items-start gap-3 p-4 pt-12 md:pt-14 mb-8">
               <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">Your Courses</h2>
               {termsCoursesData["outside"].map((course) => (
-                <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] text-center">
+                <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] text-center">
                 </Draggable>
               ))}
             </Droppable>
@@ -156,7 +156,7 @@ export default function Home() {
                     <h2 className="absolute top-3.5 md:top-4 font-bold text-sm md:text-base">{term}</h2>
                     {courses.length > 0 ? 
                       (courses.map((course) => (
-                        <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded bg-blue-100 w-auto max-w-[120px] min-h-max text-center" />
+                        <Draggable dragId={course} key={course} courseNameChange = {courseNameChange} className="p-2 z-99 hover:shadow-sm active:shadow-md border border-gray-400 rounded w-auto max-w-[120px] min-h-max text-center" />
                       )))
                       : <span className="text-gray-500 text-center text-sm md:text-base">No courses yet...</span>
                     }
