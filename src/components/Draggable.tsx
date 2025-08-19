@@ -1,23 +1,24 @@
 import { useDraggable } from "@dnd-kit/core";
 import { useState } from "react";
 import Modal from "./Modal";
+import { CourseTile } from "@/types";
 
 export default function Draggable(props: {
-  dragId: string;
+  course: CourseTile;
   courseNameChange: (dragId: string, name: string) => void;
   className?: string;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [courseName, setCourseName] = useState(props.dragId);
-  const [courseColor, setCourseColor] = useState("bg-blue-100");
+  const [courseName, setCourseName] = useState(props.course.name);
+  const [courseColor, setCourseColor] = useState("bg-blue-200 focus:bg-blue-300");
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.dragId,
+    id: props.course.uuid,
   });
 
   function editCourse(newName:string, newColor:string) {
     setCourseName(newName);
     setCourseColor(newColor);
-    props.courseNameChange(props.dragId, courseName);
+    props.courseNameChange(props.course.uuid, newName);
   }
 
   return (
@@ -34,8 +35,9 @@ export default function Draggable(props: {
         {...attributes}
         className={`w-full h-12 md:h-20 rounded-md cursor-grab active:cursor-grabbing ${courseColor} ${props.className} ${modalOpen && `bg-gray-200`}`}
         onDoubleClick={() => setModalOpen(true)}
+        id={props.course.uuid}
       >
-        <span>{courseName}</span>
+        <span className="wrap-break-word">{courseName}</span>
       </button>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />

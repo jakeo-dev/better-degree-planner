@@ -25,7 +25,7 @@ export default function Modal({
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div className="bg-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fadeIn">
         {/* Close Button */}
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition cursor-pointer">
           <FaTimes size={20} />
         </button>
 
@@ -50,18 +50,18 @@ export default function Modal({
           </label>
           <div className="grid grid-cols-7 gap-2">
             {[
-              "bg-red-200",
-              "bg-orange-200",
-              "bg-yellow-200",
-              "bg-green-200",
-              "bg-blue-100",
-              "bg-violet-200",
-              "bg-neutral-200",
+              "bg-red-200 focus:bg-red-300",
+              "bg-orange-200 focus:bg-orange-300",
+              "bg-yellow-200 focus:bg-yellow-300",
+              "bg-green-200 focus:bg-green-300",
+              "bg-blue-200 focus:bg-blue-300",
+              "bg-violet-200 focus:bg-violet-300",
+              "bg-neutral-200 focus:bg-neutral-300",
             ].map((c) => (
               <button
                 key={c}
                 onClick={() => setColor(c)}
-                className={`w-8 h-8 transition rounded-full border-2 ${
+                className={`w-8 h-8 transition rounded-full border-2 cursor-pointer ${
                   color === c ? "border-black" : "border-transparent"
                 } ${c}`}
               />
@@ -71,12 +71,12 @@ export default function Modal({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 cursor-pointer">
             Cancel
           </button>
 
-          <button onClick={() => { onSubmit(name, color); onClose();}} className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            Submit
+          <button onClick={() => { onSubmit(name, color); onClose(); }} className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer">
+            Save
           </button>
         </div>
       </div>
