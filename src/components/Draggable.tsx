@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import { useRef,useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Modal from "./Modal";
 import { CourseTile } from "@/types";
 
@@ -8,7 +8,7 @@ export default function Draggable(props: {
   updateCourse: (uuid: string, name: string, color: string) => void;
   className?: string;
   dropId: string; // id of parent droppable
-  number?: number; 
+  index?: number; // index of draggable within droppable
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [courseName, setCourseName] = useState(props.course.name);
@@ -17,13 +17,17 @@ export default function Draggable(props: {
     id: props.course.uuid,
   });
 
-  const isActive = transform?.y !== 0;
+  const [repositionConstant, setRepositionConstant] = useState(0);
 
   useEffect(() => {
-    console.log(props.number);
-    console.log(buttonRef.current ? buttonRef.current.offsetHeight : 0);
-    console.log(((buttonRef.current ? buttonRef.current.offsetHeight : 0) * (props.number || 0)));
-  }, [transform]);
+    function updateRepositionConstant() {
+      setRepositionConstant(window.innerWidth >= 768 ? 11 / 9 : 0); // 0 by default, md: 11/9 ..... for some reason draggables dont need repositioning on mobile
+    }
+
+    updateRepositionConstant();
+    window.addEventListener("resize", updateRepositionConstant);
+    return () => window.removeEventListener("resize", updateRepositionConstant);
+  }, []);
 
   function editCourse(newName:string, newColor:string) {
     setCourseName(newName);
@@ -38,21 +42,24 @@ export default function Draggable(props: {
       <button
         ref={(node) => {
           setNodeRef(node); // dnd-kit ref
-          buttonRef.current = node; // ref for re-positioning draggable because of absolute position (absolute is NECESSARY to make draggables appear above all other elements))
+          buttonRef.current = node; // ref used for re-positioning draggable
         }}
         style={{
           transform: transform
-            ? `translate3d(${transform.x}px, ${transform.y + (isActive && buttonRef.current && buttonRef.current.getBoundingClientRect().y < 360 ? ((buttonRef.current ? buttonRef.current.offsetHeight*1.25 : 0) * (props.number || 0)) : 0)}px, 0)`
+            ? `translate3d(${transform.x}px, ${transform.y + (transform && buttonRef.current && transform.y !== 0 ? ((buttonRef.current.offsetHeight*repositionConstant) * (props.index || 0)) : 0)}px, 0)` // re-position draggable because of fixed position (fixed position is NECESSARY to make draggables appear above all other elements))
             : undefined,
           touchAction: "none", // prevents default touch actions, like scrolling, when touching the draggable element (necessary for some mobile devices))
         }}
         {...listeners}
         {...attributes}
-        className={`w-full max-w-28 md:max-w-32 min-h-max h-14 md:h-18 rounded-md p-2 z-10 hover:shadow-sm active:shadow-md active:z-999 ${props.dropId !== "outside" && transform && buttonRef.current && buttonRef.current.getBoundingClientRect().y < 360 ? "active:fixed" : ""} border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${modalOpen && `bg-gray-200`}`}
+        className={`w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 z-10 hover:shadow-sm 
+          ${props.dropId !== "outside" && transform && transform.y !== 0 ? "fixed" : "" /* if being dragged and origin term is not outside, then change position to fixed when active and being dragged so it appears above other elements */ }
+          ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
+          border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${modalOpen && `bg-gray-200`}`}
         onDoubleClick={() => setModalOpen(true)}
         id={props.course.uuid}
       >
-        <span className="wrap-break-word text-sm md:text-base">{courseName}</span>
+        <p className="wrap-break-word text-sm md:text-base leading-5">{courseName}</p>
       </button>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />

@@ -175,7 +175,7 @@ export default function Home() {
         <div className="items-center justify-center">
           <div className="m-4 md:m-12 lg:m-20">
             {/* Buttons for View and System */}
-            <div className="grid grid-cols-2 gap-4 md:gap-6 w-full mb-6 md:mb-8 ml-auto">
+            <div className="grid grid-cols-2 gap-3 md:gap-6 w-full mb-6 md:mb-8 ml-auto">
               <Button 
                 onClick={() => {
                   setViewType(viewType == "Vertical" ? "Horizontal" : "Vertical");
@@ -216,7 +216,7 @@ export default function Home() {
                 </Droppable>
 
                 {/* trash box for removing courses */}
-                <Droppable dropId="delete" className="relative max-w-full max-h-45 md:max-h-36 flex-[0.1] md:flex-[0.075] text-center text-gray-400 transition border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center px-2 md:px-4">
+                <Droppable dropId="delete" className="relative max-w-full max-h-30 md:max-h-36 flex-[0.1] md:flex-[0.075] text-center text-gray-400 transition border-2 border-gray-300 border-dashed rounded-md flex items-center justify-center px-2 md:px-4">
                   <div className="w-full">
                     <LuTrash2 className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-xl md:text-3xl" aria-hidden />
                   </div>
@@ -226,19 +226,19 @@ export default function Home() {
 
             <div className={`${viewType == "Vertical" ? "mb-8" : "flex gap-4"}`}>
               {/* The rest of the terms in a grid */}
-              <div className={`${viewType == "Vertical" ? `w-full grid ${termType == "Quarter" ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3"} gap-4 md:gap-y-8 lg:gap-x-6 lg:gap-y-12 place-items-start mb-8` : "w-min overflow-x-scroll flex gap-0"}`}>
+              <div className={`${viewType == "Vertical" ? `w-full grid ${termType == "Quarter" ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3"} gap-3 md:gap-y-8 lg:gap-x-6 lg:gap-y-12 place-items-start mb-8` : "w-min overflow-x-scroll flex gap-0"}`}>
                 {Object.entries(termsCoursesData)
                   .filter(([term]) => term !== "outside") // exclude outside
                   .map(([term, courses]) => (
-                    <Droppable dropId={term} key={term} className={`${viewType == "Vertical" ? "w-full min-h-[40vh] h-full" : "w-30 md:w-44 min-h-[60vh] border-r-0 last:border-r-2 rounded-none first:rounded-l-md last:rounded-r-md"} p-2.5 md:p-4 border-2 flex-shrink-0 border-gray-300 border-dashed rounded-md`}>
+                    <Droppable dropId={term} key={term} className={`${viewType == "Vertical" ? "w-full min-h-[24vh] h-full" : "w-30 md:w-44 min-h-[60vh] border-r-0 last:border-r-2 rounded-none first:rounded-l-md last:rounded-r-md"} p-2.5 md:p-4 border-2 flex-shrink-0 border-gray-300 border-dashed rounded-md`}>
                       <div className="flex items-center justify-center flex-col md:flex-row gap-1 md:gap-1.5 font-bold text-center text-sm md:text-base">
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[0]}</h2>
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[1]}</h2>
                       </div>
-                      <div className="flex flex-col items-center gap-4 mt-3">
+                      <div className="flex flex-col items-center gap-2 md:gap-4 mt-3">
                         {courses.length > 0 ? 
                           (courses.map((course) => (
-                            <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={term} number={courses.indexOf(course)} />
+                            <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={term} index={courses.indexOf(course)} />
                           )))
                           : <span className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</span>
                         }
