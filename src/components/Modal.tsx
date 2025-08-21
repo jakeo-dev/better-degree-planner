@@ -55,13 +55,13 @@ export default function Modal({
           </label>
           <div className="grid grid-cols-7 gap-2">
             {[
-              "bg-red-200 focus:bg-red-300",
-              "bg-orange-200 focus:bg-orange-300",
-              "bg-yellow-200 focus:bg-yellow-300",
-              "bg-green-200 focus:bg-green-300",
-              "bg-blue-200 focus:bg-blue-300",
-              "bg-violet-200 focus:bg-violet-300",
-              "bg-neutral-200 focus:bg-neutral-300",
+              "bg-red-200 hover:bg-red-300 focus:bg-red-300",
+              "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300",
+              "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300",
+              "bg-green-200 hover:bg-green-300 focus:bg-green-300",
+              "bg-blue-200 hover:bg-blue-300 focus:bg-blue-300",
+              "bg-violet-200 hover:bg-violet-300 focus:bg-violet-300",
+              "bg-neutral-200 hover:bg-neutral-300 focus:bg-neutral-300",
             ].map((c) => (
               <button
                 key={c}
@@ -76,7 +76,7 @@ export default function Modal({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 cursor-pointer">
+          <button onClick={onClose} className="px-4 py-2 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer">
             Cancel
           </button>
 
