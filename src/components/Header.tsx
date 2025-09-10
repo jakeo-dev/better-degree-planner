@@ -20,6 +20,7 @@ interface HeaderProps {
   onSubmit: (name: string, color: string) => void;
   initialView?: string;
   initialTerm?: string;
+  storedFirstVisit?: string;
 }
 
 export default function Header({
@@ -29,14 +30,17 @@ export default function Header({
   onSubmit,
   initialView,
   initialTerm,
+  storedFirstVisit,
 }: HeaderProps) {
   const [viewType, setViewType] = useState(initialView || "Horizontal");
   const [termType, setTermType] = useState(initialTerm || "Semester");
+  const [firstVisit, setFirstVisit] = useState(storedFirstVisit || "true");
 
   useEffect(() => {
     setViewType(initialView || "Horizontal");
     setTermType(initialTerm || "Semester");
-  }, [initialView, initialTerm]);
+    setFirstVisit(storedFirstVisit || "true");
+  }, [initialView, initialTerm, storedFirstVisit]);
 
   const { pathname } = useRouter();
 
@@ -107,7 +111,9 @@ export default function Header({
           </button>
 
           {/* Modal Title */}
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Settings</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            {firstVisit == "true" ? "Let's Get Started" : "Settings"}
+          </h2>
 
           {/* Term System */}
           <div className="mb-6">

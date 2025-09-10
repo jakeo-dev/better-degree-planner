@@ -5,6 +5,7 @@ export default function Home() {
   const [startModalOpen, setStartModalOpen] = useState(false);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
   const [termType, setTermType] = useState("Semester"); // quarter or semester system
+  const [firstVisit, setFirstVisit] = useState("true"); // true if this is the user's first visit to the website
 
   useEffect(() => {
     const storedView = localStorage.getItem("viewType") || "Horizontal";
@@ -13,6 +14,7 @@ export default function Home() {
     setTermType(storedTerm);
 
     const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
+    setFirstVisit(storedFirstVisit);
     if (storedFirstVisit == "false") setStartModalOpen(false);
   }, []);
 
@@ -28,6 +30,7 @@ export default function Home() {
         }}
         initialView={viewType}
         initialTerm={termType}
+        storedFirstVisit={firstVisit}
       />
 
       <div className="m-4 md:m-12 lg:m-20 mt-18 md:mt-24 lg:mt-24 md:mx-auto lg:mx-auto max-w-3xl md:px-6">

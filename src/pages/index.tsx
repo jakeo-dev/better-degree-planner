@@ -5,6 +5,7 @@ import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2, LuGrid2X2, LuC
 import { useState, useEffect } from "react";
 import { CourseTile } from "@/types";
 import Header from "@/components/Header";
+import { randomElement } from "@/utilities";
 
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useState<
@@ -31,7 +32,8 @@ export default function Home() {
 
   const [startModalOpen, setStartModalOpen] = useState(true);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
-  const [termType, setTermType] = useState("Semester") // quarter or semester system
+  const [termType, setTermType] = useState("Semester"); // quarter or semester system
+  const [firstVisit, setFirstVisit] = useState("true"); // true if this is the user's first visit to the website
 
   useEffect(() => {
     const storedView = localStorage.getItem("viewType") || "Horizontal";
@@ -40,6 +42,7 @@ export default function Home() {
     setTermType(storedTerm);
 
     const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
+    setFirstVisit(storedFirstVisit);
     if (storedFirstVisit == "false") setStartModalOpen(false);
   }, []);
 
@@ -159,7 +162,18 @@ export default function Home() {
     setTermsCoursesData((prev) => {
       return {
         ...prev,
-        outside: [...prev.outside, { uuid: crypto.randomUUID(), name: "Double Click to Edit Me!", color: "bg-blue-200 hover:bg-blue-300 focus:bg-blue-300" }]
+        outside: [...prev.outside, {
+          uuid: crypto.randomUUID(),
+          name: "Double Click to Edit Me!",
+          color: randomElement([
+            "bg-red-200 hover:bg-red-300 focus:bg-red-300",
+            "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300",
+            "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300",
+            "bg-green-200 hover:bg-green-300 focus:bg-green-300",
+            "bg-blue-200 hover:bg-blue-300 focus:bg-blue-300",
+            "bg-violet-200 hover:bg-violet-300 focus:bg-violet-300"
+          ])
+        }]
       }
     })
   }
@@ -196,6 +210,7 @@ export default function Home() {
         }}
         initialView={viewType}
         initialTerm={termType}
+        storedFirstVisit={firstVisit}
       />
 
       <DndContext onDragEnd={handleDragEnd}>
