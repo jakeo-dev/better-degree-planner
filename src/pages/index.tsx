@@ -34,14 +34,13 @@ export default function Home() {
   const [termType, setTermType] = useState("Semester") // quarter or semester system
 
   useEffect(() => {
-    const storedView = localStorage.getItem("viewType");
-    const storedTerm = localStorage.getItem("termType");
-    if (storedView) setViewType(storedView);
-    if (storedTerm) setTermType(storedTerm);
+    const storedView = localStorage.getItem("viewType") || "Horizontal";
+    const storedTerm = localStorage.getItem("termType") || "Semester";
+    setViewType(storedView);
+    setTermType(storedTerm);
 
-    const storedFirstVisit = localStorage.getItem("firstVisit");
-    if (storedFirstVisit && storedFirstVisit == "false") setStartModalOpen(false);
-
+    const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
+    if (storedFirstVisit == "false") setStartModalOpen(false);
   }, []);
 
   function handleDragEnd(event: DragEndEvent) {

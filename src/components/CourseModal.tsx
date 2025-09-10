@@ -67,7 +67,7 @@ export default function CourseModal({
                 key={c}
                 onClick={() => setColor(c)}
                 className={`w-8 h-8 transition rounded-full border-2 cursor-pointer ${
-                  color === c ? "border-black" : "border-transparent"
+                  color === c ? "border-neutral-700/30" : "border-transparent"
                 } ${c}`}
               />
             ))}

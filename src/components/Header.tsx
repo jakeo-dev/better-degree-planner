@@ -44,39 +44,41 @@ export default function Header({
     <>
       {/* Header */}
       <div className="z-20 absolute top-0 w-full text-center flex gap-2 justify-between px-5 py-3 md:px-8 md:py-6">
-        <div className="flex md:block items-center text-left cursor-default">
-          <h1 className="block text-xl md:text-3xl font-bold">Title</h1>
+        <div className="flex items-center text-left cursor-default">
+          <h1 className="block text-lg md:text-2xl font-bold">
+            Better Degree Planner
+          </h1>
         </div>
 
-        <div className="h-min flex gap-0.5 md:gap-2">
+        <div className="h-min flex gap-1.5 md:gap-2">
           <Link
             className={`${
               pathname == "/"
                 ? "bg-neutral-400/20 dark:bg-neutral-300/20"
                 : "hover:bg-neutral-400/15 active:bg-neutral-400/20 dark:hover:bg-neutral-300/15 dark:active:bg-neutral-300/20"
-            } flex justify-center items-center rounded-md text-sm md:text-base text-left transition px-2.5 py-1.5 md:px-3 md:py-2`}
+            } flex justify-center items-center rounded-md text-lg md:text-base text-left transition p-1.5 md:px-3 md:py-2`}
             href="/"
           >
-            <LuHouse className="mr-1.5 md:mr-2" aria-hidden />
-            <span className="">Home</span>
+            <LuHouse className="mr-0 md:mr-2" aria-hidden />
+            <span className="hidden md:inline">Home</span>
           </Link>
           <Link
             className={`${
               pathname == "/about"
                 ? "bg-neutral-400/20 dark:bg-neutral-300/20"
                 : "hover:bg-neutral-400/15 active:bg-neutral-400/20 dark:hover:bg-neutral-300/15 dark:active:bg-neutral-300/20"
-            } flex justify-center items-center rounded-md text-sm md:text-base text-left transition px-2.5 py-1.5 md:px-3 md:py-2`}
+            } flex justify-center items-center rounded-md text-lg md:text-base text-left transition p-1.5 md:px-3 md:py-2`}
             href="/about"
           >
-            <LuInfo className="mr-1.5 md:mr-2" aria-hidden />
-            <span className="">About</span>
+            <LuInfo className="mr-0 md:mr-2" aria-hidden />
+            <span className="hidden md:inline">About</span>
           </Link>
           <button
             className={`${
               isOpen
-                ? "rotate-90 text-green-600"
-                : "hover:rotate-90 hover:text-green-600 active:rotate-180 active:text-green-700"
-            } min-h-max flex justify-center items-center rounded-md text-lg md:text-xl text-left transition cursor-pointer ml-2.5 md:ml-3`}
+                ? "rotate-90 text-blue-600"
+                : "hover:rotate-90 hover:text-blue-600 active:rotate-180 active:text-blue-700"
+            } min-h-max flex justify-center items-center rounded-md text-lg md:text-xl text-left transition cursor-pointer ml-1.5 md:ml-3`}
             onClick={() => {
               onOpen();
             }}
@@ -117,8 +119,8 @@ export default function Header({
                 <button
                   key={t}
                   onClick={() => setTermType(t)}
-                  className={`flex justify-center items-center border-green-600 bg-gray-200 hover:bg-green-200 active:bg-green-300 hover:text-green-900 border-2 transition rounded-sm w-full cursor-pointer py-1 ${
-                    termType === t ? "border-green-500" : "border-transparent"
+                  className={`flex justify-center items-center bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 border-2 transition rounded-sm w-full cursor-pointer py-1 ${
+                    termType === t ? "border-blue-500" : "border-transparent"
                   }`}
                 >
                   <LuColumns2
@@ -148,8 +150,8 @@ export default function Header({
                 <button
                   key={v}
                   onClick={() => setViewType(v)}
-                  className={`flex justify-center items-center border-green-600 bg-gray-200 hover:bg-green-200 active:bg-green-300 hover:text-green-900 border-2 transition rounded-sm w-full cursor-pointer py-1 ${
-                    viewType === v ? "border-green-500" : "border-transparent"
+                  className={`flex justify-center items-center bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 border-2 transition rounded-sm w-full cursor-pointer py-1 ${
+                    viewType === v ? "border-blue-500" : "border-transparent"
                   }`}
                 >
                   <LuGalleryHorizontal

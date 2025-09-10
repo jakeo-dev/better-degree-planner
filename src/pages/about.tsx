@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 
 export default function Home() {
   const [startModalOpen, setStartModalOpen] = useState(false);
+  const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
+  const [termType, setTermType] = useState("Semester"); // quarter or semester system
+
+  useEffect(() => {
+    const storedView = localStorage.getItem("viewType") || "Horizontal";
+    const storedTerm = localStorage.getItem("termType") || "Semester";
+    setViewType(storedView);
+    setTermType(storedTerm);
+
+    const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
+    if (storedFirstVisit == "false") setStartModalOpen(false);
+  }, []);
 
   return (
     <>
@@ -14,8 +26,8 @@ export default function Home() {
           localStorage.setItem("viewType", view);
           localStorage.setItem("termType", term);
         }}
-        initialView={localStorage.getItem("viewType") || "Horizontal"}
-        initialTerm={localStorage.getItem("termType") || "Semester"}
+        initialView={viewType}
+        initialTerm={termType}
       />
 
       <div className="m-4 md:m-12 lg:m-20 mt-18 md:mt-24 lg:mt-24 md:mx-auto lg:mx-auto max-w-4xl md:px-6">
