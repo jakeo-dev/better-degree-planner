@@ -4,7 +4,7 @@ import Draggable from "@/components/Draggable";
 import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2, LuGrid2X2, LuColumns2, LuGalleryVertical, LuGalleryHorizontal } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { CourseTile } from "@/types";
-import Button from "@/components/Button";
+import Header from "@/components/Header";
 
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useState<
@@ -29,8 +29,20 @@ export default function Home() {
     ],
   });
 
+  const [startModalOpen, setStartModalOpen] = useState(true);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
-  const [termType, setTermType] = useState("Quarter") //quarter or semester view
+  const [termType, setTermType] = useState("Semester") // quarter or semester system
+
+  useEffect(() => {
+    const storedView = localStorage.getItem("viewType");
+    const storedTerm = localStorage.getItem("termType");
+    if (storedView) setViewType(storedView);
+    if (storedTerm) setTermType(storedTerm);
+
+    const storedFirstVisit = localStorage.getItem("firstVisit");
+    if (storedFirstVisit && storedFirstVisit == "false") setStartModalOpen(false);
+
+  }, []);
 
   function handleDragEnd(event: DragEndEvent) {
     if (event.over == null) return;
@@ -170,12 +182,28 @@ export default function Home() {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <div>
-        <div className="items-center justify-center">
-          <div className="m-4 md:m-12 lg:m-20">
+    <>
+      <Header
+        isOpen={startModalOpen}
+        onOpen={() => setStartModalOpen(true)}
+        onClose={() => setStartModalOpen(false)}
+        onSubmit={(view, term) => { 
+          setViewType(view);
+          setTermType(term);
+          localStorage.setItem("viewType", view);
+          localStorage.setItem("termType", term);
+
+          localStorage.setItem("firstVisit", "false");
+        }}
+        initialView={viewType}
+        initialTerm={termType}
+      />
+
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="m-4 md:m-12 lg:m-20 mt-14 md:mt-24 lg:mt-24">
+          <div>
             {/* Buttons for View and System */}
-            <div className="grid grid-cols-2 gap-3 md:gap-6 w-full mb-6 md:mb-8 ml-auto">
+            {/* <div className="grid grid-cols-2 gap-3 md:gap-6 w-full mb-6 md:mb-8 ml-auto">
               <Button 
                 onClick={() => {
                   setViewType(viewType == "Vertical" ? "Horizontal" : "Vertical");
@@ -195,20 +223,20 @@ export default function Home() {
                 <LuGrid2X2 className={`${termType == "Semester" ? "hidden" : ""} text-lg md:text-xl mr-1.5`} aria-hidden />
                 <span>{termType} System</span>
               </Button>
-            </div>
+            </div> */}
 
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8 mb-6 lg:mb-8">
               <div className="flex flex-1 gap-4 md:gap-6 lg:gap-8">
                 {/* "Outside" Box at the Top */}
                 <Droppable dropId="outside" className="flex-1 min-h-30 md:min-h-36 border-2 border-gray-300 border-dashed rounded-md p-2.5 md:p-4">
                   <h2 className="font-bold text-sm md:text-base">Your Courses</h2>
-                  <div className="flex flex-wrap items-start gap-3 mt-3">
+                  <div className="flex flex-wrap items-start gap-2 md:gap-4 mt-3">
                     {termsCoursesData["outside"].map((course) => (
                       <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={"outside"}>
                       </Draggable>
                     ))}
 
-                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-32 min-h-max h-14 md:h-18 rounded-md p-2 text-left transition-colors cursor-pointer">
+                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 text-left transition-colors cursor-pointer">
                       <LuCirclePlus className="text-xl md:text-2xl mr-2 md:mr-3" aria-hidden />
                       <span className="w-min wrap-break-word text-sm md:text-base">Add Course</span>
                     </button>
@@ -240,7 +268,7 @@ export default function Home() {
                           (courses.map((course) => (
                             <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={term} index={courses.indexOf(course)} />
                           )))
-                          : <span className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</span>
+                          : <p className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</p>
                         }
                       </div>
                     </Droppable>
@@ -258,7 +286,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
-    </DndContext>
+      </DndContext>
+    </>
   );
 }

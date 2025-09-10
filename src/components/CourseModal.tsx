@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
-interface ModalProps {
+interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (name: string, color: string) => void;
@@ -9,13 +9,13 @@ interface ModalProps {
   initialColor?: string;
 }
 
-export default function Modal({
+export default function CourseModal({
   isOpen,
   onClose,
   onSubmit,
   initialName = "",
   initialColor = "",
-}: ModalProps) {
+}: CourseModalProps) {
   const [name, setName] = useState(initialName);
   const [color, setColor] = useState(initialColor);
 
@@ -28,10 +28,10 @@ export default function Modal({
         if (e.key === "Escape") onClose();
       }}
       >
-      <div className="bg-gray-100 rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fadeIn">
+      <div className="bg-gray-100 rounded-2xl shadow-xl w-[95vw] max-w-md p-6 relative animate-fadeIn">
         {/* Close Button */}
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition cursor-pointer">
-          <FaTimes size={20} />
+          <FaTimes size={20} aria-label="Close modal" title="Close modal" />
         </button>
 
         {/* Title */}
