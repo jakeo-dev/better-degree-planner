@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
-import Modal from "./Modal";
+import CourseModal from "./CourseModal";
 import { CourseTile } from "@/types";
 
 export default function Draggable(props: {
@@ -10,7 +10,7 @@ export default function Draggable(props: {
   dropId: string; // id of parent droppable
   index?: number; // index of draggable within droppable
 }) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [courseModalOpen, setCourseModalOpen] = useState(false);
   const [courseName, setCourseName] = useState(props.course.name);
   const [courseColor, setCourseColor] = useState(props.course.color);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -55,14 +55,14 @@ export default function Draggable(props: {
         className={`w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 z-10 hover:shadow-sm 
           ${props.dropId !== "outside" && transform && transform.y !== 0 ? "fixed" : "" /* if being dragged and origin term is not outside, then change position to fixed when active and being dragged so it appears above other elements */ }
           ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
-          border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${modalOpen && `bg-gray-200`}`}
-        onDoubleClick={() => setModalOpen(true)}
+          border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${courseModalOpen && `bg-gray-200`}`}
+        onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
       >
         <p className="wrap-break-word text-sm md:text-base leading-5">{courseName}</p>
       </button>
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />
+      <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />
     </>
   );
 }
