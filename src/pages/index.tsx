@@ -1,7 +1,7 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
 import Draggable from "@/components/Draggable";
-import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2, LuGrid2X2, LuColumns2, LuGalleryVertical, LuGalleryHorizontal } from "react-icons/lu";
+import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2 } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import { CourseTile } from "@/types";
 import Header from "@/components/Header";
@@ -15,17 +15,17 @@ export default function Home() {
       { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
       { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300" },
     ],
-    "Year 1 | Term 1": [
+    "Year 1 | 1": [
       { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300" },
       { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
     ],
-    "Year 1 | Term 2": [
+    "Year 1 | 2": [
       { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
     ],
-    "Year 1 | Term 3": [
+    "Year 1 | 3": [
       { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
     ],
-    "Year 1 | Term 4": [
+    "Year 1 | 4": [
       { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
     ],
   });
@@ -68,7 +68,7 @@ export default function Home() {
   function addTerm() {
     setTermsCoursesData((prev) => {
       const lastTerm = Object.keys(prev).at(-1);
-      const yearAndTerm = lastTerm?.replace("Year", "").replace("Term", "").trim().split(" | ");
+      const yearAndTerm = lastTerm?.replace("Year", "").trim().split(" | ");
       let newYear = parseInt(yearAndTerm![0]) + 1;
       if (Object.keys(prev).length <= 2) {
         newYear = 1;
@@ -77,7 +77,7 @@ export default function Home() {
       const termsPerYear = termType === "Semester" ? 3 : 4;
       const newEntries: Record<string, CourseTile[]> = {};
       for (let n = 1; n <= termsPerYear; n++) {
-        const newTermString = `Year ${newYear} | Term ${n}`;
+        const newTermString = `Year ${newYear} | ${n}`;
         newEntries[newTermString] = [];
       }
 
@@ -91,12 +91,12 @@ export default function Home() {
       const keys = Object.keys(prev);
       const lastKey = keys.filter((k) => k !== "outside").at(-1);
       if (!lastKey) return prev;
-      const [lastYearStr] = lastKey .replace("Year", "").replace("Term", "").trim().split(" | ");
+      const [lastYearStr] = lastKey.replace("Year", "").trim().split(" | ");
       const lastYear = parseInt(lastYearStr);
       const termsPerYear = termType === "Semester" ? 3 : 4;
       const keysToRemove = Array.from(
         { length: termsPerYear },
-        (_, i) => `Year ${lastYear} | Term ${i + 1}`
+        (_, i) => `Year ${lastYear} | ${i + 1}`
       );
       const removedCourses = keysToRemove.flatMap((k) => prev[k] || []);
       const updated: typeof prev = { ...prev };
@@ -116,7 +116,7 @@ export default function Home() {
         const updated: typeof prev = { ...prev };
         let movedCourses: CourseTile[] = [];
         Object.keys(prev).forEach((key) => {
-          if (key.includes("Term 4")) {
+          if (key.includes("| 4")) {
             movedCourses = [...movedCourses, ...(prev[key] || [])];
             delete updated[key];
           }
@@ -137,8 +137,8 @@ export default function Home() {
           const yearNumA = parseInt(yearA.replace("Year ", ""), 10);
           const yearNumB = parseInt(yearB.replace("Year ", ""), 10);
           if (yearNumA !== yearNumB) return yearNumA - yearNumB;
-          const termNumA = parseInt(termA.replace("Term ", ""), 10);
-          const termNumB = parseInt(termB.replace("Term ", ""), 10);
+          const termNumA = parseInt(termA.replace("", ""), 10);
+          const termNumB = parseInt(termB.replace("", ""), 10);
           return termNumA - termNumB;
         });
         // now insert the missing term 4
@@ -146,8 +146,8 @@ export default function Home() {
           const key = sortedKeys[i];
           newData[key] = prev[key];
           const [year, term] = key.split("|").map((s) => s.trim());
-          if (term === "Term 3") {
-            const term4Key = `${year} | Term 4`;
+          if (term === "3") {
+            const term4Key = `${year} | 4`;
             if (!(term4Key in prev)) {
               newData[term4Key] = [];
             }
@@ -275,7 +275,7 @@ export default function Home() {
                     <Droppable dropId={term} key={term} className={`${viewType == "Vertical" ? "w-full min-h-[24vh] h-full" : "w-30 md:w-44 min-h-[60vh] border-r-0 last:border-r-2 rounded-none first:rounded-l-md last:rounded-r-md"} p-2.5 md:p-4 border-2 flex-shrink-0 border-gray-300 border-dashed rounded-md`}>
                       <div className="flex items-center justify-center flex-col md:flex-row gap-1 md:gap-1.5 font-bold text-center text-sm md:text-base">
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[0]}</h2>
-                        <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[1]}</h2>
+                        <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "Summer Term" : termType} {termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "" : term.split(" | ")[1]}</h2>
                       </div>
                       <div className="flex flex-col items-center gap-2 md:gap-4 mt-3">
                         {courses.length > 0 ? 
