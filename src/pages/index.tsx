@@ -12,21 +12,21 @@ export default function Home() {
     Record<string, CourseTile[]>
   >({
     outside: [
-      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
-      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300" },
+      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 4 },
+      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300", units: 3 },
     ],
     "Year 1 | 1": [
-      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300" },
-      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
+      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300", units: 4 },
+      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 2 },
     ],
     "Year 1 | 2": [
-      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
+      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 3 },
     ],
     "Year 1 | 3": [
-      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
+      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 4 },
     ],
     "Year 1 | 4": [
-      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300" },
+      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units:3 },
     ],
   });
 
@@ -172,21 +172,22 @@ export default function Home() {
             "bg-green-200 hover:bg-green-300 focus:bg-green-300",
             "bg-blue-200 hover:bg-blue-300 focus:bg-blue-300",
             "bg-violet-200 hover:bg-violet-300 focus:bg-violet-300"
-          ])
+          ]),
+          units: 0,
         }]
       }
     })
   }
 
   // updates course info from modal and saves it in termsCoursesData state
-  function updateCourse(uuid: string, newName: string, newColor: string) {
+  function updateCourse(uuid: string, newName: string, newColor: string, newUnits: number) {
     setTermsCoursesData((prev) => {
       // Create a new object to avoid mutating state
       const newData: Record<string, CourseTile[]> = {};
       // Iterate over each term
       for (const term in prev) {
         newData[term] = prev[term].map((course) =>
-          course.uuid === uuid ? { uuid: uuid, name: newName, color: newColor } : course //changes name :)
+          course.uuid === uuid ? { uuid: uuid, name: newName, color: newColor, units: newUnits } : course //changes name :)
         );
       }
 
@@ -277,6 +278,7 @@ export default function Home() {
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[0]}</h2>
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "Summer Term" : termType} {termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "" : term.split(" | ")[1]}</h2>
                       </div>
+                      <p className="flex justify-center text-xs md:text-sm text-black/60 mt-0.5 md:mt-1">{courses.reduce((sum, course) => { return sum+course.units}, 0)} units</p>
                       <div className="flex flex-col items-center gap-2 md:gap-4 mt-3">
                         {courses.length > 0 ? 
                           (courses.map((course) => (

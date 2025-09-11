@@ -17,7 +17,7 @@ interface HeaderProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onSubmit: (name: string, color: string) => void;
+  onSubmit: (viewType: string, termType: string) => void;
   initialView?: string;
   initialTerm?: string;
   storedFirstVisit?: string;
@@ -28,18 +28,18 @@ export default function Header({
   onOpen,
   onClose,
   onSubmit,
-  initialView,
-  initialTerm,
-  storedFirstVisit,
+  initialView = "Horizontal",
+  initialTerm = "Semester",
+  storedFirstVisit = "true",
 }: HeaderProps) {
   const [viewType, setViewType] = useState(initialView || "Horizontal");
   const [termType, setTermType] = useState(initialTerm || "Semester");
   const [firstVisit, setFirstVisit] = useState(storedFirstVisit || "true");
 
   useEffect(() => {
-    setViewType(initialView || "Horizontal");
-    setTermType(initialTerm || "Semester");
-    setFirstVisit(storedFirstVisit || "true");
+    setViewType(initialView);
+    setTermType(initialTerm);
+    setFirstVisit(storedFirstVisit);
   }, [initialView, initialTerm, storedFirstVisit]);
 
   const { pathname } = useRouter();
@@ -149,7 +149,7 @@ export default function Header({
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-600 mb-2">
-              View System
+              View Type
             </label>
             <div className="flex gap-2">
               {["Horizontal", "Vertical"].map((v) => (

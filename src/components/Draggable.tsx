@@ -5,7 +5,7 @@ import { CourseTile } from "@/types";
 
 export default function Draggable(props: {
   course: CourseTile;
-  updateCourse: (uuid: string, name: string, color: string) => void;
+  updateCourse: (uuid: string, name: string, color: string, units: number) => void;
   className?: string;
   dropId: string; // id of parent droppable
   index?: number; // index of draggable within droppable
@@ -13,6 +13,8 @@ export default function Draggable(props: {
   const [courseModalOpen, setCourseModalOpen] = useState(false);
   const [courseName, setCourseName] = useState(props.course.name);
   const [courseColor, setCourseColor] = useState(props.course.color);
+  const [courseUnits, setCourseUnits] = useState(props.course.units);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.course.uuid,
   });
@@ -29,10 +31,11 @@ export default function Draggable(props: {
     return () => window.removeEventListener("resize", updateRepositionConstant);
   }, []);
 
-  function editCourse(newName:string, newColor:string) {
+  function editCourse(newName:string, newColor:string, newUnits:number) {
     setCourseName(newName);
     setCourseColor(newColor);
-    props.updateCourse(props.course.uuid, newName, newColor);
+    setCourseUnits(newUnits);
+    props.updateCourse(props.course.uuid, newName, newColor, newUnits);
   }
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -59,10 +62,11 @@ export default function Draggable(props: {
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
       >
-        <p className="wrap-break-word text-sm md:text-base leading-5">{courseName}</p>
+        <p className="wrap-break-word text-sm md:text-base leading-5 font-medium">{courseName}</p>
+        <p className="wrap-break-word text-black/60 text-xs md:text-sm mt-0.5 md:mt-1">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
       </button>
 
-      <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newColor) => {editCourse(newName, newColor)}} initialName={courseName} initialColor={courseColor} />
+      <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newColor, newUnits) => {editCourse(newName, newColor, newUnits)}} initialName={courseName} initialColor={courseColor} initialUnits={courseUnits} />
     </>
   );
 }
