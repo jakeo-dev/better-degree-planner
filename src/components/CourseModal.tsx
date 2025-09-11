@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
 interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string, color: string) => void;
+  onSubmit: (name: string, color: string, units: number) => void;
   initialName?: string;
   initialColor?: string;
+  initialUnits?: number;
 }
 
 export default function CourseModal({
@@ -15,9 +16,17 @@ export default function CourseModal({
   onSubmit,
   initialName = "",
   initialColor = "",
+  initialUnits = 0,
 }: CourseModalProps) {
   const [name, setName] = useState(initialName);
   const [color, setColor] = useState(initialColor);
+  const [units, setUnits] = useState(String(initialUnits));
+
+  useEffect(() => {
+    setName(initialName);
+    setColor(initialColor);
+    setUnits(String(initialUnits));
+  }, [initialName, initialColor, initialUnits]);
 
   if (!isOpen) return null;
 
@@ -27,25 +36,53 @@ export default function CourseModal({
       onKeyDown={(e) => {
         if (e.key === "Escape") onClose();
       }}
-      >
+    >
       <div className="bg-gray-100 rounded-2xl shadow-xl w-[95vw] max-w-md p-6 relative animate-fadeIn">
         {/* Close Button */}
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition cursor-pointer">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition cursor-pointer"
+        >
           <FaTimes size={20} aria-label="Close modal" title="Close modal" />
         </button>
 
         {/* Title */}
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Edit Course Info</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+          Edit Course Info
+        </h2>
 
         {/* Course Name */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600 mb-1">
-            Course Name
-          </label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value.slice(0, 30))} className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter course name"/>
-          <p className="text-xs text-gray-400 mt-1">
-            {name.length}/30 characters
-          </p>
+        <div className="flex gap-2 mb-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Course Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value.slice(0, 30))}
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter course name"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              {name.length}/30 characters
+            </p>
+          </div>
+
+          <div className="flex-[0.25]">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Units
+            </label>
+            <input
+              type="number"
+              value={units}
+              onChange={(e) => setUnits(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter units"
+              min={0}
+              max={10}
+            />
+          </div>
         </div>
 
         {/* Course Color */}
@@ -76,11 +113,20 @@ export default function CourseModal({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 transition cursor-pointer"
+          >
             Cancel
           </button>
 
-          <button onClick={() => { onSubmit(name, color); onClose(); }} className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer">
+          <button
+            onClick={() => {
+              onSubmit(name, color, Number(units));
+              onClose();
+            }}
+            className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer"
+          >
             Save
           </button>
         </div>
