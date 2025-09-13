@@ -1,34 +1,16 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
 import Draggable from "@/components/Draggable";
+import Header from "@/components/Header";
 import { LuCalendarPlus, LuCalendarMinus, LuCirclePlus, LuTrash2 } from "react-icons/lu";
 import { useState, useEffect } from "react";
+import { useAtom } from 'jotai';
+import { termsAndCourses } from "../api/atoms";
 import { CourseTile } from "@/types";
-import Header from "@/components/Header";
 import { randomElement } from "@/utilities";
 
 export default function Home() {
-  const [termsCoursesData, setTermsCoursesData] = useState<
-    Record<string, CourseTile[]>
-  >({
-    outside: [
-      { uuid: crypto.randomUUID(), name: "CS 100", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 4 },
-      { uuid: crypto.randomUUID(), name: "ENG 101", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300", units: 3 },
-    ],
-    "Year 1 | 1": [
-      { uuid: crypto.randomUUID(), name: "ENG 102", color: "bg-yellow-200 hover:bg-yellow-300 focus:bg-yellow-300", units: 4 },
-      { uuid: crypto.randomUUID(), name: "CS 101", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 2 },
-    ],
-    "Year 1 | 2": [
-      { uuid: crypto.randomUUID(), name: "CS 102", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 3 },
-    ],
-    "Year 1 | 3": [
-      { uuid: crypto.randomUUID(), name: "CS 103", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units: 4 },
-    ],
-    "Year 1 | 4": [
-      { uuid: crypto.randomUUID(), name: "CS 104", color: "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300", units:3 },
-    ],
-  });
+  const [termsCoursesData, setTermsCoursesData] = useAtom(termsAndCourses)
 
   const [startModalOpen, setStartModalOpen] = useState(true);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view

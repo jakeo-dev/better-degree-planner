@@ -56,8 +56,8 @@ export default function Draggable(props: {
         {...listeners}
         {...attributes}
         className={`w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 z-10 hover:shadow-sm 
-          ${props.dropId !== "outside" && transform && transform.y !== 0 ? "fixed" : "" /* if being dragged and origin term is not outside, then change position to fixed when active and being dragged so it appears above other elements */ }
-          ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
+          ${props.dropId !== "outside" && transform && transform.y !== 0 ? "absolute z-50" : "relative" /* if being dragged and origin term is not outside, then change position to fixed when active and being dragged so it appears above other elements */ }
+          ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */} /*THE ABOVE WAS CHANGED TO absolute z-50 : relative instead of FIXED so it would MOVE RELATIVE TO SCROLL!! */
           border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${courseModalOpen && `bg-gray-200`}`}
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
