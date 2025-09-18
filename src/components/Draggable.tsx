@@ -19,18 +19,6 @@ export default function Draggable(props: {
     id: props.course.uuid,
   });
 
-  const [repositionConstant, setRepositionConstant] = useState(0);
-
-  useEffect(() => {
-    function updateRepositionConstant() {
-      setRepositionConstant(window.innerWidth >= 768 ? 11 / 9 : 0); // 0 by default, md: 11/9 ..... for some reason draggables dont need repositioning on mobile
-    }
-
-    updateRepositionConstant();
-    window.addEventListener("resize", updateRepositionConstant);
-    return () => window.removeEventListener("resize", updateRepositionConstant);
-  }, []);
-
   function editCourse(newName:string, newColor:string, newUnits:number) {
     setCourseName(newName);
     setCourseColor(newColor);
@@ -38,26 +26,97 @@ export default function Draggable(props: {
     props.updateCourse(props.course.uuid, newName, newColor, newUnits);
   }
 
+  // repositioning for outside droppable
+  const [repositionConstant, setRepositionConstant] = useState(0);
+  useEffect(() => {
+    function updateRepositionConstant() {
+      setRepositionConstant(window.innerWidth >= 768 ? 11 / 9 : 0); // 0 by default, md: 11/9 ..... for some reason it doesnt need repositioning on mobile
+    }
+
+    // update constant when window resized
+    updateRepositionConstant();
+    window.addEventListener("resize", updateRepositionConstant);
+    return () => window.removeEventListener("resize", updateRepositionConstant);
+  }, []);
+
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // position for term droppables
+  const [position, setPosition] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  // handle starting dragging
+  function handleMouseDown() {
+    setIsDragging(true);
+  }
+
+  useEffect(() => {
+    function handleMouseMove(e: globalThis.MouseEvent) {
+      if (isDragging) {
+        // update position of draggable when it is being dragged
+        setPosition({
+          x: e.clientX - 60, // center draggable horizontally
+          y: e.clientY + window.scrollY - 36, // center draggable vertically
+        });
+      }
+    }
+
+    function handleMouseMoveMobile(e: globalThis.TouchEvent) {
+      if (isDragging && e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        // update position of draggable when it is being dragged
+        setPosition({
+          x: touch.clientX - 60, // center draggable horizontally
+          y: touch.clientY + window.scrollY - 36, // center draggable vertically
+        });
+      }
+    }
+
+    // stop dragging on mouse up
+    function handleMouseUp() {
+      setIsDragging(false);
+    }
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleMouseMoveMobile);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchend', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleMouseMoveMobile);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchend', handleMouseUp);
+    };
+  }, [isDragging]);
 
   return (
     <>
       <button
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleMouseDown}
         ref={(node) => {
           setNodeRef(node); // dnd-kit ref
-          buttonRef.current = node; // ref used for re-positioning draggable
+          buttonRef.current = node; // ref used for re-positioning draggables in outside droppable
         }}
         style={{
-          transform: transform
-            ? `translate3d(${transform.x}px, ${transform.y + (transform && buttonRef.current && transform.y !== 0 ? ((buttonRef.current.offsetHeight*repositionConstant) * (props.index || 0)) : 0)}px, 0)` // re-position draggable because of fixed position (fixed position is NECESSARY to make draggables appear above all other elements))
+          transform: props.dropId == "outside" && transform
+            ? `translate3d(${transform.x}px, ${transform.y + (transform && buttonRef.current && transform.y !== 0 ? ((buttonRef.current.offsetHeight*repositionConstant) * (props.index || 0)) : 0)}px, 0)` // IF in outside droppable, re-position draggable because of fixed position (fixed position is NECESSARY to make draggables appear above all other elements)
             : undefined,
-          touchAction: "none", // prevents default touch actions, like scrolling, when touching the draggable element (necessary for some mobile devices))
+          touchAction: "none", // prevents default touch actions, like scrolling, when touching the draggable element (necessary for some mobile devices)
+          left: props.dropId !== "outside" ? position.x : undefined, // dont use absolute positioning if draggable is in outside droppable
+          top: props.dropId !== "outside" ? position.y : undefined, // dont use absolute positioning if draggable is in outside droppable
         }}
         {...listeners}
         {...attributes}
         className={`w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 z-10 hover:shadow-sm 
-          ${props.dropId !== "outside" && transform && transform.y !== 0 ? "absolute z-50" : "relative" /* if being dragged and origin term is not outside, then change position to fixed when active and being dragged so it appears above other elements */ }
-          ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */} /*THE ABOVE WAS CHANGED TO absolute z-50 : relative instead of FIXED so it would MOVE RELATIVE TO SCROLL!! */
+          ${transform && (transform.x !== 0 || transform.y !== 0) ? (props.dropId == "outside" ? "relative" : "absolute") : "" /* if being dragged and origin term is outside, then change position to fixed when active and being dragged so it appears above other elements, if not outside, use absolute positioning */ }
+          ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
           border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${courseModalOpen && `bg-gray-200`}`}
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
