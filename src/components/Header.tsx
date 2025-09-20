@@ -17,9 +17,10 @@ interface HeaderProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onSubmit: (viewType: string, termType: string) => void;
-  initialView?: string;
-  initialTerm?: string;
+  onSubmit: (viewType: string, termType: string, sortType: string) => void;
+  initialView: string;
+  initialTerm: string;
+  initialSort: string;
   storedFirstVisit?: string;
 }
 
@@ -30,17 +31,20 @@ export default function Header({
   onSubmit,
   initialView = "Horizontal",
   initialTerm = "Semester",
+  initialSort = "None",
   storedFirstVisit = "true",
 }: HeaderProps) {
   const [viewType, setViewType] = useState(initialView || "Horizontal");
   const [termType, setTermType] = useState(initialTerm || "Semester");
+  const [sortType, setSortType] = useState(initialSort || "None");
   const [firstVisit, setFirstVisit] = useState(storedFirstVisit || "true");
 
   useEffect(() => {
     setViewType(initialView);
     setTermType(initialTerm);
+    setSortType(initialSort);
     setFirstVisit(storedFirstVisit);
-  }, [initialView, initialTerm, storedFirstVisit]);
+  }, [initialView, initialTerm, initialSort, storedFirstVisit]);
 
   const { pathname } = useRouter();
 
@@ -178,6 +182,25 @@ export default function Header({
             </div>
           </div>
 
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
+              Sort Courses By
+            </label>
+            <div className="flex gap-2">
+              {["None", "Name", "Color", "Units"].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSortType(s)}
+                  className={`flex justify-center items-center bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 border-2 transition rounded-sm w-full cursor-pointer py-1 ${
+                    sortType === s ? "border-blue-500" : "border-transparent"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Buttons */}
           <div className="flex justify-end gap-3">
             <button
@@ -189,7 +212,7 @@ export default function Header({
 
             <button
               onClick={() => {
-                onSubmit(viewType, termType);
+                onSubmit(viewType, termType, sortType);
                 onClose();
               }}
               className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer"

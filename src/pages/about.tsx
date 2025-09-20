@@ -5,13 +5,16 @@ export default function Home() {
   const [startModalOpen, setStartModalOpen] = useState(false);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
   const [termType, setTermType] = useState("Semester"); // quarter or semester system
+  const [sortType, setSortType] = useState("None"); // sort by name, color, units, or none
   const [firstVisit, setFirstVisit] = useState("true"); // true if this is the user's first visit to the website
 
   useEffect(() => {
     const storedView = localStorage.getItem("viewType") || "Horizontal";
     const storedTerm = localStorage.getItem("termType") || "Semester";
+    const storedSort = localStorage.getItem("sortType") || "None";
     setViewType(storedView);
     setTermType(storedTerm);
+    setSortType(storedSort);
 
     const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
     setFirstVisit(storedFirstVisit);
@@ -24,12 +27,17 @@ export default function Home() {
         isOpen={startModalOpen}
         onOpen={() => setStartModalOpen(true)}
         onClose={() => setStartModalOpen(false)}
-        onSubmit={(view, term) => {
+        onSubmit={(view, term, sort) => {
+          setViewType(view);
+          setTermType(term);
+          setSortType(sort);
           localStorage.setItem("viewType", view);
           localStorage.setItem("termType", term);
+          localStorage.setItem("sortType", sort);
         }}
         initialView={viewType}
         initialTerm={termType}
+        initialSort={sortType}
         storedFirstVisit={firstVisit}
       />
 

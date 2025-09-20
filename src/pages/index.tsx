@@ -7,7 +7,8 @@ import { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { termsAndCourses } from "../api/atoms";
 import { CourseTile } from "@/types";
-import { randomElement } from "@/utilities";
+import Header from "@/components/Header";
+import { randomElement, sortCoursesAlphabetically, sortCoursesColor, sortCoursesUnits } from "@/utilities";
 
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useAtom(termsAndCourses)
@@ -15,13 +16,16 @@ export default function Home() {
   const [startModalOpen, setStartModalOpen] = useState(true);
   const [viewType, setViewType] = useState("Horizontal"); // horizontal or vertical view
   const [termType, setTermType] = useState("Semester"); // quarter or semester system
+  const [sortType, setSortType] = useState("None"); // sort by name, color, units, or none
   const [firstVisit, setFirstVisit] = useState("true"); // true if this is the user's first visit to the website
 
   useEffect(() => {
     const storedView = localStorage.getItem("viewType") || "Horizontal";
     const storedTerm = localStorage.getItem("termType") || "Semester";
+    const storedSort = localStorage.getItem("sortType") || "None";
     setViewType(storedView);
     setTermType(storedTerm);
+    setSortType(storedSort);
 
     const storedFirstVisit = localStorage.getItem("firstVisit") || "true";
     setFirstVisit(storedFirstVisit);
@@ -183,51 +187,31 @@ export default function Home() {
         isOpen={startModalOpen}
         onOpen={() => setStartModalOpen(true)}
         onClose={() => setStartModalOpen(false)}
-        onSubmit={(view, term) => { 
+        onSubmit={(view, term, sort) => { 
           setViewType(view);
           setTermType(term);
+          setSortType(sort);
           localStorage.setItem("viewType", view);
           localStorage.setItem("termType", term);
+          localStorage.setItem("sortType", sort);
 
           localStorage.setItem("firstVisit", "false");
         }}
         initialView={viewType}
         initialTerm={termType}
+        initialSort={sortType}
         storedFirstVisit={firstVisit}
       />
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="m-4 md:m-12 lg:m-20 mt-14 md:mt-24 lg:mt-24">
           <div>
-            {/* Buttons for View and System */}
-            {/* <div className="grid grid-cols-2 gap-3 md:gap-6 w-full mb-6 md:mb-8 ml-auto">
-              <Button 
-                onClick={() => {
-                  setViewType(viewType == "Vertical" ? "Horizontal" : "Vertical");
-                }}
-                className="hover:bg-green-200 active:bg-green-300 hover:text-green-900">
-                <LuGalleryHorizontal className={`${viewType == "Vertical" ? "hidden" : ""} md:text-lg mr-1.5`} aria-hidden />
-                <LuGalleryVertical className={`${viewType == "Horizontal" ? "hidden" : ""} md:text-lg mr-1.5`} aria-hidden />
-                <span>{viewType} View</span>
-              </Button>
-
-              <Button 
-                onClick={() => {
-                  setTermType(termType == "Quarter" ? "Semester" : "Quarter");
-                }}
-                className="hover:bg-green-200 active:bg-green-300 hover:text-green-900">
-                <LuColumns2 className={`${termType == "Quarter" ? "hidden" : ""} text-lg md:text-xl mr-1.5`} aria-hidden />
-                <LuGrid2X2 className={`${termType == "Semester" ? "hidden" : ""} text-lg md:text-xl mr-1.5`} aria-hidden />
-                <span>{termType} System</span>
-              </Button>
-            </div> */}
-
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8 mb-6 lg:mb-8">
               <div className="flex flex-1 gap-4 md:gap-6 lg:gap-8">
                 {/* "Outside" Box at the Top */}
                 <Droppable dropId="outside" className="flex-1 min-h-30 md:min-h-36 border-2 border-gray-300 border-dashed rounded-md p-2.5 md:p-4">
                   <h2 className="font-bold text-sm md:text-base">Your Courses</h2>
-                  <div className="flex flex-wrap items-start gap-2 md:gap-4 mt-3">
+                  <div className="relative flex flex-wrap items-start gap-2 md:gap-4 mt-3">
                     {termsCoursesData["outside"].map((course) => (
                       <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={"outside"}>
                       </Draggable>
@@ -255,15 +239,24 @@ export default function Home() {
                 {Object.entries(termsCoursesData)
                   .filter(([term]) => term !== "outside") // exclude outside
                   .map(([term, courses]) => (
-                    <Droppable dropId={term} key={term} className={`${viewType == "Vertical" ? "w-full min-h-[24vh] h-full" : "w-30 md:w-44 min-h-[60vh] border-r-0 last:border-r-2 rounded-none first:rounded-l-md last:rounded-r-md"} p-2.5 md:p-4 border-2 flex-shrink-0 border-gray-300 border-dashed rounded-md`}>
-                      <div className="flex items-center justify-center flex-col md:flex-row gap-1 md:gap-1.5 font-bold text-center text-sm md:text-base">
+                    <Droppable dropId={term} key={term} className={`${viewType == "Vertical" ? "w-full min-h-[24vh] h-full" : "w-30 md:w-42 min-h-[60vh] border-r-0 last:border-r-2 rounded-none first:rounded-l-md last:rounded-r-md"} pt-2.5 border-2 flex-shrink-0 border-gray-300 border-dashed rounded-md`}>
+                      <div className={`flex items-center justify-center flex-col md:flex-row gap-1 md:gap-1.5 font-bold text-center ${viewType.includes("Hor") ? "text-[0.8rem] md:text-sm" : "text-sm md:text-base"}`}>
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{term.split(" | ")[0]}</h2>
-                        <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "Summer Term" : termType} {termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3 ? "" : term.split(" | ")[1]}</h2>
+                        <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "Summer" : termType} {(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "" : term.split(" | ")[1]}</h2>
                       </div>
-                      <p className="flex justify-center text-xs md:text-sm text-black/60 mt-0.5 md:mt-1">{courses.reduce((sum, course) => { return sum+course.units}, 0)} units</p>
-                      <div className="flex flex-col items-center gap-2 md:gap-4 mt-3">
+                      <p className="flex justify-center text-xs md:text-sm text-black/70 mt-0.5 md:mt-1">{courses.reduce((sum, course) => { return sum+course.units}, 0)} units</p>
+                      <div className="flex flex-col items-center gap-2 md:gap-4 p-2.5 mt-3">
                         {courses.length > 0 ? 
-                          (courses.map((course) => (
+                          ([...courses]
+                            .sort(
+                              sortType == "Color"
+                                ? sortCoursesColor
+                                : sortType == "Name"
+                                ? sortCoursesAlphabetically
+                                : sortType == "Units"
+                                ? sortCoursesUnits
+                                : () => 0
+                            ).map((course) => (
                             <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={term} index={courses.indexOf(course)} />
                           )))
                           : <p className="text-gray-500 text-center text-xs md:text-sm">No courses yet...</p>
