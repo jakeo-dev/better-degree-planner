@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { termsAndCourses } from "../api/atoms";
 import { CourseTile } from "@/types";
-import Header from "@/components/Header";
 import { randomElement, sortCoursesAlphabetically, sortCoursesColor, sortCoursesUnits } from "@/utilities";
 
 export default function Home() {
