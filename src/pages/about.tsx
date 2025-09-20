@@ -44,7 +44,7 @@ export default function Home() {
       <div className="m-4 md:m-12 lg:m-20 mt-18 md:mt-24 lg:mt-24 md:mx-auto lg:mx-auto max-w-3xl md:px-6">
         <h2 className="font-bold text-xl md:text-2xl">About</h2>
         <p className="text-sm md:text-base text-pretty mt-2">
-          Better Degree Planner allows students to plan their degree progress
+          MajorMap allows students to plan their degree progress
           using an interactive flowchart.
         </p>
 

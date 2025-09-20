@@ -54,7 +54,7 @@ export default function Header({
       <div className="z-20 absolute top-0 w-full text-center flex gap-2 justify-between px-5 py-3 md:px-8 md:py-6">
         <div className="flex items-center text-left cursor-default">
           <h1 className="block text-lg md:text-2xl font-bold">
-            Better Degree Planner
+            MajorMap
           </h1>
         </div>
 
