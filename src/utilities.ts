@@ -5,11 +5,6 @@ export function randomElement<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-// sort courses alphabetically
-export function sortCoursesAlphabetically(a: CourseTile, b: CourseTile) {
-  return a.name.localeCompare(b.name);
-}
-
 // get color level (in rainbow order)
 const getColorLevel = (color: string) => {
   if (color == "bg-red-200 hover:bg-red-300 focus:bg-red-300") return 6;
@@ -25,12 +20,31 @@ const getColorLevel = (color: string) => {
   else return 0;
 };
 
-// sort courses by color
-export function sortCoursesColor(a: CourseTile, b: CourseTile) {
-  return getColorLevel(b.color) - getColorLevel(a.color);
+// sort courses by name, then color, then units
+export function sortCoursesAlphabetically(a: CourseTile, b: CourseTile) {
+  if (a.name !== b.name) return a.name.localeCompare(b.name);
+
+  if (getColorLevel(b.color) !== getColorLevel(a.color))
+    return getColorLevel(b.color) - getColorLevel(a.color);
+
+  return b.units - a.units;
 }
 
-// sort courses by units
-export function sortCoursesUnits(a: CourseTile, b: CourseTile) {
+// sort courses by color, then name, then units
+export function sortCoursesColor(a: CourseTile, b: CourseTile) {
+  if (getColorLevel(b.color) !== getColorLevel(a.color))
+    return getColorLevel(b.color) - getColorLevel(a.color);
+
+  if (a.name !== b.name) return a.name.localeCompare(b.name);
+
   return b.units - a.units;
+}
+
+// sort courses by units, then name, then color
+export function sortCoursesUnits(a: CourseTile, b: CourseTile) {
+  if (b.units !== a.units) return b.units - a.units;
+
+  if (a.name !== b.name) return a.name.localeCompare(b.name);
+
+  return getColorLevel(b.color) - getColorLevel(a.color);
 }
