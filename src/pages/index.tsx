@@ -7,7 +7,9 @@ import { useState, useEffect } from "react";
 import { useAtom } from 'jotai';
 import { termsAndCourses } from "../api/atoms";
 import { CourseTile } from "@/types";
+import Head from 'next/head'
 import { randomElement, sortCoursesAlphabetically, sortCoursesColor, sortCoursesUnits } from "@/utilities";
+
 
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useAtom(termsAndCourses)
@@ -182,6 +184,17 @@ export default function Home() {
 
   return (
     <>
+      <Head> {/* <Head> works for pages router. For app router, use export const metadata. */}
+        <title>MajorMap</title>
+        <meta
+          name="description"
+          content="Plan your degree progress with an interactive flowchart and selectable classes."
+        />
+        <meta property="og:title" content="MajorMap" />
+        <meta property="og:description" content="Plan your degree progress with MajorMap." />
+        <meta property="og:type" content="website" />
+      </Head>
+
       <Header
         isOpen={startModalOpen}
         onOpen={() => setStartModalOpen(true)}
