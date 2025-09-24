@@ -77,8 +77,8 @@ export default function Home() {
             courses within each term. 
           </p>
            <p className="text-sm md:text-base text-pretty font-semibold mt-2">
-            Courses and relevant site data (type of term system, sorting configuration, etc) are stored in the user's local cache. 
-            Clearing your web browser's cache resets these configurations.
+            Courses and relevant site data (type of term system, sorting configuration, etc) are stored in the user&apos;s local cache. 
+            Clearing your web browser&apos;s cache resets these configurations.
            </p>
         <h2 className="font-bold text-xl md:text-2xl mt-6 md:mt-10">Attributes</h2>
           <p className="text-sm md:text-base text-pretty mt-2">
