@@ -123,15 +123,9 @@ export default function Draggable(props: {
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
       >
-        <div className="relative w-full h-full flex justify-center">
-          <div className="pb-5 md:pb-6.5">
-            <p className="wrap-break-word text-sm md:text-base leading-5 font-[600] md:font-[550]">{courseName}</p>
-            <p className={`${courseTitle == "" ? "hidden" : ""} wrap-break-word text-black/80 text-[0.65rem] md:text-xs mt-0.5 md:mt-1`}>{courseTitle}</p>
-          </div>
-          <div className="absolute bottom-0">
-            <p className="wrap-break-word text-black/60 text-xs md:text-sm">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
-          </div>
-        </div>
+        <p className="wrap-break-word text-sm md:text-base leading-5 font-[600] md:font-[550]">{courseName}</p>
+        <p className={`${courseTitle == "" ? "hidden" : ""} wrap-break-word text-black/80 text-[0.65rem] md:text-xs mt-0.5 md:mt-1`}>{courseTitle}</p>
+        <p className="wrap-break-word text-black/60 text-xs md:text-sm mt-1 md:mt-1.5">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
       </button>
 
       <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newTitle, newColor, newUnits) => {editCourse(newName, newTitle, newColor, newUnits)}} initialName={courseName} initialTitle={courseTitle} initialColor={courseColor} initialUnits={courseUnits} />
