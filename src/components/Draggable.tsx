@@ -116,16 +116,22 @@ export default function Draggable(props: {
         }}
         {...listeners}
         {...attributes}
-        className={`w-full max-w-28 md:max-w-34 min-h-max h-16 md:h-20 rounded-md p-1.5 md:p-2.5 z-10 hover:shadow-sm 
+        className={`w-full max-w-28 md:max-w-34 min-h-max  rounded-md p-1.5 md:p-2.5 z-10 hover:shadow-sm 
           ${transform && (transform.x !== 0 || transform.y !== 0) ? (props.dropId == "outside" ? "relative" : "absolute") : "" /* if being dragged and origin term is outside, then change position to fixed when active and being dragged so it appears above other elements, if not outside, use absolute positioning */ }
           ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
           border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className}`}
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
       >
-        <p className="wrap-break-word text-sm md:text-base leading-5 font-medium">{courseName}</p>
-        <p className="wrap-break-word text-black/80 text-xs md:text-sm mt-0.5 md:mt-0.5">{courseTitle}</p>
-        <p className="wrap-break-word text-black/60 text-xs md:text-sm mt-0.5 md:mt-1">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
+        <div className="relative w-full h-full flex justify-center">
+          <div className="pb-5 md:pb-6.5">
+            <p className="wrap-break-word text-sm md:text-base leading-5 font-[600] md:font-[550]">{courseName}</p>
+            <p className={`${courseTitle == "" ? "hidden" : ""} wrap-break-word text-black/80 text-[0.65rem] md:text-xs mt-0.5 md:mt-1`}>{courseTitle}</p>
+          </div>
+          <div className="absolute bottom-0">
+            <p className="wrap-break-word text-black/60 text-xs md:text-sm">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
+          </div>
+        </div>
       </button>
 
       <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newTitle, newColor, newUnits) => {editCourse(newName, newTitle, newColor, newUnits)}} initialName={courseName} initialTitle={courseTitle} initialColor={courseColor} initialUnits={courseUnits} />

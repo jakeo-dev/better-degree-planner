@@ -53,9 +53,7 @@ export default function Header({
       {/* Header */}
       <div className="z-20 absolute top-0 w-full text-center flex gap-2 justify-between px-5 py-3 md:px-8 md:py-6">
         <div className="flex items-center text-left cursor-default">
-          <h1 className="block text-lg md:text-2xl font-bold">
-            MajorMap
-          </h1>
+          <h1 className="block text-lg md:text-2xl font-bold">MajorMap</h1>
         </div>
 
         <div className="h-min flex gap-1.5 md:gap-2">
@@ -67,8 +65,10 @@ export default function Header({
             } flex justify-center items-center rounded-md text-lg md:text-base text-left transition p-1.5 md:px-3 md:py-2`}
             href="/"
           >
-            <LuHouse className="mr-0 md:mr-2" aria-hidden />
-            <span className="hidden md:inline">Home</span>
+            <LuHouse className="mr-0 md:mr-2" title="Home" aria-label="Home" />
+            <span className="hidden md:inline" aria-hidden>
+              Home
+            </span>
           </Link>
           <Link
             className={`${
@@ -78,8 +78,10 @@ export default function Header({
             } flex justify-center items-center rounded-md text-lg md:text-base text-left transition p-1.5 md:px-3 md:py-2`}
             href="/about"
           >
-            <LuInfo className="mr-0 md:mr-2" aria-hidden />
-            <span className="hidden md:inline">About</span>
+            <LuInfo className="mr-0 md:mr-2" title="About" aria-label="About" />
+            <span className="hidden md:inline" aria-hidden>
+              About
+            </span>
           </Link>
           <button
             className={`${
@@ -91,7 +93,11 @@ export default function Header({
               onOpen();
             }}
           >
-            <LuCog className="transition" aria-hidden />
+            <LuCog
+              className="transition"
+              title="Settings"
+              aria-label="Settings"
+            />
           </button>
         </div>
       </div>

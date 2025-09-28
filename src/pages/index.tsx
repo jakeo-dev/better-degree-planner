@@ -10,7 +10,6 @@ import { CourseTile } from "@/types";
 import Head from 'next/head'
 import { randomElement, sortCoursesAlphabetically, sortCoursesColor, sortCoursesUnits } from "@/utilities";
 
-
 export default function Home() {
   const [termsCoursesData, setTermsCoursesData] = useAtom(termsAndCourses)
 
@@ -230,7 +229,7 @@ export default function Home() {
                       </Draggable>
                     ))}
 
-                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-34 min-h-max h-16 md:h-20 rounded-md p-2 text-left transition-colors cursor-pointer">
+                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-34 min-h-max h-19 md:h-22 rounded-md p-2 text-left transition-colors cursor-pointer">
                       <LuCirclePlus className="text-xl md:text-2xl mr-2 md:mr-3" aria-hidden />
                       <span className="w-min wrap-break-word text-sm md:text-base">Add Course</span>
                     </button>
@@ -258,7 +257,7 @@ export default function Home() {
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "Summer" : termType} {(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "" : term.split(" | ")[1]}</h2>
                       </div>
                       <p className="flex justify-center text-xs md:text-sm text-black/70 mt-0.5 md:mt-1">{courses.reduce((sum, course) => { return sum+course.units}, 0)} units</p>
-                      <div className="flex flex-col items-center gap-2 md:gap-3 p-2.5 mt-1">
+                      <div className="flex flex-col items-center gap-2 md:gap-3 p-2.5">
                         {courses.length > 0 ? 
                           ([...courses]
                             .sort(
@@ -281,10 +280,10 @@ export default function Home() {
               
               <div className={`${viewType == "Vertical" ? "flex-row" : "flex-col"} flex gap-4 items-center justify-center`}>
                 <button onClick={addTerm} className="flex items-center justify-center rounded-full w-10 md:w-16 h-10 md:h-16 bg-blue-100 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 transition cursor-pointer">
-                  <LuCalendarPlus className="text-xl md:text-3xl" aria-label="Add Year" />
+                  <LuCalendarPlus className="text-xl md:text-3xl" title="Add Year" aria-label="Add Year" />
                 </button>
                 <button onClick={removeTerm} className="flex items-center justify-center rounded-full w-10 md:w-16 h-10 md:h-16 bg-red-100 hover:bg-red-200 active:bg-red-300 hover:text-red-900 transition cursor-pointer">
-                  <LuCalendarMinus className="text-xl md:text-3xl" aria-label="Remove Year" />
+                  <LuCalendarMinus className="text-xl md:text-3xl" title="Remove Year" aria-label="Remove Year" />
                 </button>
               </div>
             </div>
