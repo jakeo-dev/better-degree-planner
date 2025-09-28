@@ -187,7 +187,7 @@ export default function Header({
               Sort Courses By
             </label>
             <div className="flex gap-2">
-              {["None", "Name", "Color", "Units"].map((s) => (
+              {["None", "Number", "Color", "Units"].map((s) => (
                 <button
                   key={s}
                   onClick={() => setSortType(s)}

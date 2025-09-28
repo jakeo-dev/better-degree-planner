@@ -4,8 +4,9 @@ import { FaTimes } from "react-icons/fa";
 interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string, color: string, units: number) => void;
+  onSubmit: (name: string, title: string, color: string, units: number) => void;
   initialName?: string;
+  initialTitle?: string;
   initialColor?: string;
   initialUnits?: number;
 }
@@ -15,18 +16,21 @@ export default function CourseModal({
   onClose,
   onSubmit,
   initialName = "",
+  initialTitle = "",
   initialColor = "",
   initialUnits = 0,
 }: CourseModalProps) {
   const [name, setName] = useState(initialName);
+  const [title, setTitle] = useState(initialTitle);
   const [color, setColor] = useState(initialColor);
   const [units, setUnits] = useState(String(initialUnits));
 
   useEffect(() => {
     setName(initialName);
+    setTitle(initialTitle);
     setColor(initialColor);
     setUnits(String(initialUnits));
-  }, [initialName, initialColor, initialUnits]);
+  }, [initialName, initialTitle, initialColor, initialUnits]);
 
   if (!isOpen) return null;
 
@@ -55,20 +59,21 @@ export default function CourseModal({
         <div className="flex gap-2 mb-4">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-600 mb-1">
-              Course Name
+              Course Number
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value.slice(0, 30))}
               className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter course name"
+              placeholder="e.g. PHIL 101"
             />
             <p className="text-xs text-gray-400 mt-1">
               {name.length}/30 characters
             </p>
           </div>
 
+          {/* Course Units */}
           <div className="flex-[0.25]">
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Units
@@ -78,10 +83,29 @@ export default function CourseModal({
               value={units}
               onChange={(e) => setUnits(e.target.value)}
               className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Enter units"
+              placeholder="0"
               min={0}
               max={10}
             />
+          </div>
+        </div>
+
+        {/* Course Title */}
+        <div className="flex gap-2 mb-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Course Name
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value.slice(0, 100))}
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="e.g. Introduction to Philosophy"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              {title.length}/100 characters
+            </p>
           </div>
         </div>
 
@@ -122,7 +146,7 @@ export default function CourseModal({
 
           <button
             onClick={() => {
-              onSubmit(name, color, Number(units));
+              onSubmit(name, title, color, Number(units));
               onClose();
             }}
             className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer"

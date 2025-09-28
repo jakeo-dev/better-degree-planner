@@ -5,13 +5,14 @@ import { CourseTile } from "@/types";
 
 export default function Draggable(props: {
   course: CourseTile;
-  updateCourse: (uuid: string, name: string, color: string, units: number) => void;
+  updateCourse: (uuid: string, name: string, title: string, color: string, units: number) => void;
   className?: string;
   dropId: string; // id of parent droppable
   index?: number; // index of draggable within droppable
 }) {
   const [courseModalOpen, setCourseModalOpen] = useState(false);
   const [courseName, setCourseName] = useState(props.course.name);
+  const [courseTitle, setCourseTitle] = useState(props.course.title);
   const [courseColor, setCourseColor] = useState(props.course.color);
   const [courseUnits, setCourseUnits] = useState(props.course.units);
 
@@ -19,11 +20,12 @@ export default function Draggable(props: {
     id: props.course.uuid,
   });
 
-  function editCourse(newName:string, newColor:string, newUnits:number) {
+  function editCourse(newName: string, newTitle: string, newColor: string, newUnits: number) {
     setCourseName(newName);
+    setCourseTitle(newTitle);
     setCourseColor(newColor);
     setCourseUnits(newUnits);
-    props.updateCourse(props.course.uuid, newName, newColor, newUnits);
+    props.updateCourse(props.course.uuid, newName, newTitle, newColor, newUnits);
   }
 
   // repositioning for outside droppable
@@ -114,18 +116,19 @@ export default function Draggable(props: {
         }}
         {...listeners}
         {...attributes}
-        className={`w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 z-10 hover:shadow-sm 
+        className={`w-full max-w-28 md:max-w-34 min-h-max h-16 md:h-20 rounded-md p-1.5 md:p-2.5 z-10 hover:shadow-sm 
           ${transform && (transform.x !== 0 || transform.y !== 0) ? (props.dropId == "outside" ? "relative" : "absolute") : "" /* if being dragged and origin term is outside, then change position to fixed when active and being dragged so it appears above other elements, if not outside, use absolute positioning */ }
           ${transform && transform.y !== 0 ? "z-99 shadow-md" : "" /* if being dragged, then apply classes (done this way so it works on mobile too) */}
-          border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className} ${courseModalOpen && `bg-gray-200`}`}
+          border-2 border-neutral-500/30 text-center cursor-grab active:cursor-grabbing transition-colors ${courseColor} ${props.className}`}
         onDoubleClick={() => setCourseModalOpen(true)}
         id={props.course.uuid}
       >
         <p className="wrap-break-word text-sm md:text-base leading-5 font-medium">{courseName}</p>
+        <p className="wrap-break-word text-black/80 text-xs md:text-sm mt-0.5 md:mt-0.5">{courseTitle}</p>
         <p className="wrap-break-word text-black/60 text-xs md:text-sm mt-0.5 md:mt-1">{courseUnits} unit{courseUnits != 1 ? "s" : ""}</p>
       </button>
 
-      <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newColor, newUnits) => {editCourse(newName, newColor, newUnits)}} initialName={courseName} initialColor={courseColor} initialUnits={courseUnits} />
+      <CourseModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} onSubmit={(newName, newTitle, newColor, newUnits) => {editCourse(newName, newTitle, newColor, newUnits)}} initialName={courseName} initialTitle={courseTitle} initialColor={courseColor} initialUnits={courseUnits} />
     </>
   );
 }

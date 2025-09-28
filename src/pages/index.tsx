@@ -152,6 +152,7 @@ export default function Home() {
         outside: [...prev.outside, {
           uuid: crypto.randomUUID(),
           name: "Double Click to Edit Me!",
+          title: "",
           color: randomElement([
             "bg-red-200 hover:bg-red-300 focus:bg-red-300",
             "bg-orange-200 hover:bg-orange-300 focus:bg-orange-300",
@@ -167,14 +168,14 @@ export default function Home() {
   }
 
   // updates course info from modal and saves it in termsCoursesData state
-  function updateCourse(uuid: string, newName: string, newColor: string, newUnits: number) {
+  function updateCourse(uuid: string, newName: string, newTitle: string, newColor: string, newUnits: number) {
     setTermsCoursesData((prev) => {
       // Create a new object to avoid mutating state
       const newData: Record<string, CourseTile[]> = {};
       // Iterate over each term
       for (const term in prev) {
         newData[term] = prev[term].map((course) =>
-          course.uuid === uuid ? { uuid: uuid, name: newName, color: newColor, units: newUnits } : course //changes name :)
+          course.uuid === uuid ? { uuid: uuid, name: newName, title: newTitle, color: newColor, units: newUnits } : course //changes info :)
         );
       }
 
@@ -223,13 +224,13 @@ export default function Home() {
                 {/* "Outside" Box at the Top */}
                 <Droppable dropId="outside" className="flex-1 min-h-30 md:min-h-36 border-2 border-gray-300 border-dashed rounded-md p-2.5 md:p-4">
                   <h2 className="font-bold text-sm md:text-base">Your Courses</h2>
-                  <div className="relative flex flex-wrap items-start gap-2 md:gap-4 mt-3">
+                  <div className="relative flex flex-wrap items-start gap-2 md:gap-3 mt-3">
                     {termsCoursesData["outside"].map((course) => (
                       <Draggable course={course} key={course.uuid} updateCourse={updateCourse} dropId={"outside"}>
                       </Draggable>
                     ))}
 
-                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-32 min-h-max h-16 md:h-20 rounded-md p-2 text-left transition-colors cursor-pointer">
+                    <button onClick={addCourse} className="bg-gray-200 hover:bg-blue-200 active:bg-blue-300 hover:text-blue-900 flex items-center justify-center w-full max-w-28 md:max-w-34 min-h-max h-16 md:h-20 rounded-md p-2 text-left transition-colors cursor-pointer">
                       <LuCirclePlus className="text-xl md:text-2xl mr-2 md:mr-3" aria-hidden />
                       <span className="w-min wrap-break-word text-sm md:text-base">Add Course</span>
                     </button>
@@ -257,7 +258,7 @@ export default function Home() {
                         <h2 className="bg-gray-100 rounded px-1.5 py-0.25">{(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "Summer" : termType} {(termType.includes("Sem") && parseInt(term.split(" | ")[1]) === 3) || (termType.includes("Quart") && parseInt(term.split(" | ")[1]) === 4) ? "" : term.split(" | ")[1]}</h2>
                       </div>
                       <p className="flex justify-center text-xs md:text-sm text-black/70 mt-0.5 md:mt-1">{courses.reduce((sum, course) => { return sum+course.units}, 0)} units</p>
-                      <div className="flex flex-col items-center gap-2 md:gap-4 p-2.5 mt-3">
+                      <div className="flex flex-col items-center gap-2 md:gap-3 p-2.5 mt-1">
                         {courses.length > 0 ? 
                           ([...courses]
                             .sort(
